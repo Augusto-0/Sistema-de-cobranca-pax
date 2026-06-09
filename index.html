@@ -11,16 +11,19 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* CORREÇÃO 1: 100vh -> 100dvh */
         body {
             font-family: 'Inter', sans-serif;
             background: #f5f5f5;
-            min-height: 100vh;
+            min-height: 100dvh;
             overflow-x: hidden;
             font-size: 16px;
         }
+        
         /* TELA DE LOGIN */
         .login-container {
-            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -98,19 +101,30 @@
         .success-message { background: #e0ffe0; color: #10b981; padding: 10px; border-radius: 12px; margin-top: 12px; text-align: center; font-size: 13px; }
         
         /* DASHBOARD */
-        .app-container { display: flex; min-height: 100vh; }
+        .app-container { 
+            display: flex; 
+            min-height: 100dvh; 
+        }
+        
+        /* CORREÇÃO 2: Sidebar com altura correta */
         .sidebar {
             width: 260px;
             background: white;
             position: fixed;
-            height: 100vh;
+            height: 100dvh;
             overflow-y: auto;
             transition: transform 0.3s ease;
             z-index: 1000;
             transform: translateX(-100%);
             border-right: 1px solid #D4AF37;
         }
-        .sidebar.active { transform: translateX(0); }
+        
+        /* CORREÇÃO 5: Overlay para fechar o menu */
+        .sidebar.active {
+            transform: translateX(0);
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
+        }
+        
         .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid #eee; }
         .sidebar-logo {
             width: 55px;
@@ -164,15 +178,25 @@
         }
         .menu-toggle i { font-size: 18px; color: #D4AF37; }
         
-        /* CARDS - TAMANHO AJUSTADO */
+        /* CARDS */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
         .stat-card { background: white; border-radius: 14px; padding: 12px; border: 1px solid #eee; }
         .stat-card h3 { color: #888; font-size: 11px; margin-bottom: 4px; }
         .stat-card .value { font-size: 20px; font-weight: 800; color: #D4AF37; }
         
-        /* TABELAS RESPONSIVAS */
-        .data-table { background: white; border-radius: 14px; overflow-x: auto; border: 1px solid #eee; }
-        table { width: 100%; border-collapse: collapse; min-width: 480px; }
+        /* CORREÇÃO 6: Tabelas com scroll horizontal */
+        .data-table { 
+            background: white; 
+            border-radius: 14px; 
+            overflow-x: auto; 
+            border: 1px solid #eee;
+            -webkit-overflow-scrolling: touch;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            min-width: 650px;
+        }
         th, td { padding: 10px 12px; text-align: left; font-size: 13px; }
         th { background: #f8f8f8; color: #D4AF37; font-weight: 600; }
         td { border-bottom: 1px solid #f0f0f0; color: #333; }
@@ -186,7 +210,7 @@
         .badge-paid { background: #e0ffe0; color: #10b981; }
         .badge-overdue { background: #ffe0e0; color: #dc2626; }
         
-        /* MODAIS - TELA CHEIA EM CELULAR */
+        /* CORREÇÃO 3: Modal não corta */
         .modal {
             display: none;
             position: fixed;
@@ -206,7 +230,7 @@
             padding: 20px;
             width: 95%;
             max-width: 450px;
-            max-height: 90vh;
+            max-height: calc(100dvh - 30px);
             overflow-y: auto;
             border-top: 4px solid #D4AF37;
         }
@@ -226,7 +250,6 @@
         
         /* LOCALIZAÇÃO */
         .location-info { background: #f0f0f0; padding: 10px; border-radius: 12px; font-size: 13px; margin: 10px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
-        .link-location { color: #3b82f6; text-decoration: none; font-size: 12px; word-break: break-all; }
         .row-buttons { display: flex; gap: 10px; margin: 10px 0; }
         .row-buttons .btn-secondary { flex: 1; margin: 0; }
         .location-input-group { display: flex; gap: 8px; margin: 10px 0; }
@@ -251,6 +274,7 @@
         @media (min-width: 768px) {
             .menu-toggle { display: none; }
             .sidebar { transform: translateX(0); width: 250px; }
+            .sidebar.active { box-shadow: none; }
             .main-content { margin-left: 250px; padding: 20px; padding-top: 20px; }
             .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 15px; }
         }
@@ -258,7 +282,6 @@
             .stat-card .value { font-size: 18px; }
             .page-header h1 { font-size: 20px; }
             .btn-icon { padding: 5px 8px; font-size: 10px; }
-            td, th { padding: 8px 10px; font-size: 12px; }
         }
     </style>
 </head>
@@ -300,33 +323,35 @@
                         <div data-page="usuarios" class="nav-item" id="usuariosNav"><i class="fas fa-user-shield"></i><span>Usuários</span></div>
                         <div id="logoutBtn" class="nav-item"><i class="fas fa-sign-out-alt"></i><span>Sair</span></div>
                     </nav>
-                    <div class="sidebar-footer"><div id="fullscreenMenuBtn" class="fullscreen-menu-item"><i class="fas fa-expand"></i><span>Tela Cheia</span></div></div>
+                    <div class="sidebar-footer">
+                        <div id="fullscreenMenuBtn" class="fullscreen-menu-item" style="display: flex;"><i class="fas fa-expand"></i><span>Tela Cheia</span></div>
+                    </div>
                 </aside>
 
                 <main class="main-content">
                     <div id="dashboardPage" class="page active">
                         <div class="page-header"><h1>Dashboard</h1></div>
                         <div class="stats-grid" id="statsGrid"></div>
-                        <div class="data-table" style="margin-top: 16px;"><tr><thead><tr><th>Resumo Financeiro</th><th>Valor</th></tr></thead><tbody id="resumoFinanceiro"></tbody></table></div>
+                        <div class="data-table" style="margin-top: 16px;"><table><thead><tr><th>Resumo Financeiro</th><th>Valor</th></tr></thead><tbody id="resumoFinanceiro"></tbody></table></div>
                     </div>
                     <div id="clientesPage" class="page">
                         <div class="page-header"><h1>Clientes</h1><button class="btn-primary" onclick="openClientModal()" style="width: auto; padding: 10px 16px;"><i class="fas fa-plus"></i> Novo</button></div>
                         <div class="search-box"><input type="text" id="searchClient" placeholder="🔍 Pesquisar por nome, CPF ou telefone..." onkeyup="filterClients()"></div>
-                        <div class="data-table"><table><thead><tr><th>Nome</th><th>CPF</th><th>Telefone</th><th>Endereço</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="clientesList"></tbody></table></div>
+                        <div class="data-table"></table><thead><tr><th>Nome</th><th>CPF</th><th>Telefone</th><th>Endereço</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="clientesList"></tbody></table></div>
                     </div>
                     <div id="cobrancasPage" class="page">
                         <div class="page-header"><h1>Cobranças</h1><button class="btn-primary" onclick="openCobrancaModal()" style="width: auto; padding: 10px 16px;"><i class="fas fa-plus"></i> Nova</button></div>
                         <div class="search-box"><input type="text" id="searchCobranca" placeholder="🔍 Pesquisar por cliente..." onkeyup="filterCobrancas()"></div>
-                        <div class="data-table"><tr><thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cobrancasList"></tbody></table></div>
+                        <div class="data-table"><table><thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cobrancasList"></tbody></table></div>
                     </div>
                     <div id="pagamentosPage" class="page">
                         <div class="page-header"><h1>Pagamentos</h1></div>
                         <div class="search-box"><input type="text" id="searchPagamento" placeholder="🔍 Pesquisar por cliente..." onkeyup="filterPagamentos()"></div>
-                        <div class="data-table"></td><thead><tr><th>Cliente</th><th>Valor</th><th>Forma</th><th>Data/Hora</th><th>Usuário</th></tr></thead><tbody id="pagamentosList"></tbody></table></div>
+                        <div class="data-table"><table><thead><tr><th>Cliente</th><th>Valor</th><th>Forma</th><th>Data/Hora</th><th>Usuário</th></tr></thead><tbody id="pagamentosList"></tbody></table></div>
                     </div>
                     <div id="usuariosPage" class="page">
                         <div class="page-header"><h1>Usuários</h1><button class="btn-primary" onclick="openUserModal()" style="width: auto; padding: 10px 16px;"><i class="fas fa-plus"></i> Novo</button></div>
-                        <div class="data-table"><table><thead><tr><th>Usuário</th><th>Nome</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead><tbody id="usuariosList"></tbody></table></div>
+                        <div class="data-table"></table><thead><tr><th>Usuário</th><th>Nome</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead><tbody id="usuariosList"></tbody></table></div>
                     </div>
                 </main>
             </div>
@@ -358,6 +383,7 @@
         let pendingSync = JSON.parse(localStorage.getItem('prevenir_pending_sync') || '[]');
         let isOnline = navigator.onLine;
         let syncInProgress = false;
+        let linkLocalizacao = '';
 
         if (users.length === 0) {
             users = [{ id: 1, username: 'Yagil', senha_hash: 'admin123', nome: 'Administrador', perfil: 'admin', ativo: true }];
@@ -378,7 +404,7 @@
             localStorage.setItem('prevenir_charges', JSON.stringify(charges));
         }
 
-        // SYNC
+        // SYNC FUNCTIONS
         function updateSyncIndicator() {
             const indicator = document.getElementById('syncIndicator');
             if (!indicator) return;
@@ -422,16 +448,32 @@
         window.addEventListener('online', () => { isOnline = true; updateSyncIndicator(); if (pendingSync.length && !syncInProgress) autoSync(); });
         window.addEventListener('offline', () => { isOnline = false; updateSyncIndicator(); });
 
-        // TELA CHEIA
+        // CORREÇÃO 4: TELA CHEIA MELHORADA
         function toggleFullscreen() {
-            if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-compress"></i><span>Sair Tela Cheia</span>'; } 
-            else { document.exitFullscreen(); document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-expand"></i><span>Tela Cheia</span>'; }
+            try {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen?.();
+                    document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-compress"></i><span>Sair Tela Cheia</span>';
+                } else {
+                    document.exitFullscreen?.();
+                    document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-expand"></i><span>Tela Cheia</span>';
+                }
+            } catch (e) {
+                console.log('Fullscreen não suportado neste dispositivo');
+                alert('Tela cheia não suportada neste navegador');
+            }
         }
+        
+        // Detectar se é mobile e esconder botão fullscreen se necessário
+        const isAndroidWebView = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isAndroidWebView) {
+            const btn = document.getElementById('fullscreenMenuBtn');
+            if (btn) btn.style.display = 'none';
+        }
+        
         document.getElementById('fullscreenMenuBtn').addEventListener('click', toggleFullscreen);
 
-        // LOCALIZAÇÃO COM LINK FALLBACK
-        let linkLocalizacao = '';
-
+        // LOCALIZAÇÃO
         function capturarLocalizacao() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -583,6 +625,14 @@
                 if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('active');
             });
         });
+        
+        // Fechar sidebar ao clicar no overlay
+        document.getElementById('sidebar').addEventListener('click', function(e) {
+            if (e.target === this && window.innerWidth < 768) {
+                this.classList.remove('active');
+            }
+        });
+        
         document.getElementById('menuToggle').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('active'); });
 
         // CARREGAR DADOS
@@ -602,6 +652,7 @@
                 loadDashboard(); loadClientes(); loadCobrancas(); loadPagamentos(); loadUsuarios();
             } catch(e) { console.error(e); }
         }
+        
         function atualizarAtrasadas() {
             const hoje = new Date();
             let att = false;
@@ -637,12 +688,12 @@
             const cobCliente = charges.filter(ch => ch.cliente_id === id);
             const pagCliente = payments.filter(p => { const ch = charges.find(c => c.id === p.cobranca_id); return ch && ch.cliente_id === id; });
             document.getElementById('detalhesCliente').innerHTML = `<p><strong>Nome:</strong> ${c.nome}</p><p><strong>CPF:</strong> ${c.cpf || '-'}</p><p><strong>Telefone:</strong> ${c.telefone || '-'}</p><p><strong>Endereço:</strong> ${c.endereco || '-'} ${c.bairro || ''} ${c.cidade || ''} ${c.estado || ''}</p><p><strong>Observações:</strong> ${c.observacoes || '-'}</p>${c.latitude ? `<p><strong>Localização:</strong> <button class="btn-secondary btn-small" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')">Abrir Mapa</button> <button class="btn-secondary btn-small" onclick="navigator.clipboard.writeText('https://www.google.com/maps?q=${c.latitude},${c.longitude}')">Copiar Link</button></p>` : ''}`;
-            let cobHtml = cobCliente.length ? '<div class="data-table"><table style="width:100%"><tr><th>Valor</th><th>Vencimento</th><th>Status</th></tr>' : '';
+            let cobHtml = cobCliente.length ? '<div class="data-table"><table style="width:100%"><thead><tr><th>Valor</th><th>Vencimento</th><th>Status</th></tr></thead><tbody>' : '';
             for (let ch of cobCliente) cobHtml += `<tr><td>R$ ${ch.valor}</td><td>${new Date(ch.vencimento).toLocaleDateString()}</td><td>${ch.status === 'paid' ? 'Pago' : (ch.status === 'overdue' ? 'Atrasado' : 'Pendente')}</td></tr>`;
-            cobHtml += cobCliente.length ? '</table></div>' : '<p>Nenhuma cobrança</p>';
-            let pagHtml = pagCliente.length ? '<div class="data-table"><table style="width:100%"><tr><th>Valor</th><th>Forma</th><th>Data</th></tr>' : '';
+            cobHtml += cobCliente.length ? '</tbody></table></div>' : '<p>Nenhuma cobrança</p>';
+            let pagHtml = pagCliente.length ? '<div class="data-table"><table style="width:100%"><thead><tr><th>Valor</th><th>Forma</th><th>Data</th></tr></thead><tbody>' : '';
             for (let p of pagCliente) pagHtml += `<tr><td>R$ ${p.valor_recebido}</td><td>${p.forma_pagamento}</td><td>${new Date(p.data_pagamento).toLocaleString()}</td></tr>`;
-            pagHtml += pagCliente.length ? '</table></div>' : '<p>Nenhum pagamento</p>';
+            pagHtml += pagCliente.length ? '</tbody></table></div>' : '<p>Nenhum pagamento</p>';
             document.getElementById('detalhesCobrancas').innerHTML = cobHtml;
             document.getElementById('detalhesPagamentos').innerHTML = pagHtml;
             document.getElementById('detalhesObservacoes').innerHTML = c.observacoes || 'Nenhuma observação';
