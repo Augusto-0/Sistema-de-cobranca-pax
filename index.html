@@ -583,17 +583,6 @@
             box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
         }
 
-        /* FOTO PREVIEW */
-        .foto-preview {
-            width: 100px;
-            height: 100px;
-            border-radius: 16px;
-            object-fit: cover;
-            margin: 10px 0;
-            border: 2px solid #D4AF37;
-            cursor: pointer;
-        }
-
         /* PAGE HEADER */
         .page-header {
             display: flex;
@@ -701,6 +690,27 @@
             background: #D4AF37;
             border-radius: 10px;
         }
+
+        /* INFO LOCALIZAÇÃO */
+        .location-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #495057;
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            width: auto;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -767,43 +777,155 @@
                     <div id="clientesPage" class="page">
                         <div class="page-header"><h1>Clientes</h1><button class="btn-primary" onclick="openClientModal()" style="width: auto; padding: 12px 24px;"><i class="fas fa-plus"></i> Novo Cliente</button></div>
                         <div class="search-box"><input type="text" id="searchClient" placeholder="🔍 Pesquisar por nome, CPF ou telefone..." onkeyup="filterClients()"></div>
-                        <div class="data-table"><table><thead><tr><th>Nome</th><th>CPF</th><th>Telefone</th><th>Endereço</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="clientesList"></tbody></table></div>
+                        <div class="data-table">
+                            <table>
+                                <thead><tr><th>Nome</th><th>CPF</th><th>Telefone</th><th>Endereço</th><th>Situação</th><th>Ações</th></tr></thead>
+                                <tbody id="clientesList"></tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- COBRANÇAS -->
                     <div id="cobrancasPage" class="page">
                         <div class="page-header"><h1>Cobranças</h1><button class="btn-primary" onclick="openCobrancaModal()" style="width: auto; padding: 12px 24px;"><i class="fas fa-plus"></i> Nova Cobrança</button></div>
                         <div class="search-box"><input type="text" id="searchCobranca" placeholder="🔍 Pesquisar por cliente..." onkeyup="filterCobrancas()"></div>
-                        <div class="data-table"><table><thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cobrancasList"></tbody></table></div>
+                        <div class="data-table">
+                            <table>
+                                <thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead>
+                                <tbody id="cobrancasList"></tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- PAGAMENTOS -->
                     <div id="pagamentosPage" class="page">
                         <div class="page-header"><h1>Histórico de Pagamentos</h1></div>
                         <div class="search-box"><input type="text" id="searchPagamento" placeholder="🔍 Pesquisar por cliente..." onkeyup="filterPagamentos()"></div>
-                        <div class="data-table"><table><thead><tr><th>Cliente</th><th>Valor</th><th>Forma</th><th>Data/Hora</th><th>Usuário</th></tr></thead><tbody id="pagamentosList"></tbody></table></div>
+                        <div class="data-table">
+                            <table>
+                                <thead><tr><th>Cliente</th><th>Valor</th><th>Forma</th><th>Data/Hora</th><th>Usuário</th></tr></thead>
+                                <tbody id="pagamentosList"></tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- USUÁRIOS -->
                     <div id="usuariosPage" class="page">
                         <div class="page-header"><h1>Usuários</h1><button class="btn-primary" onclick="openUserModal()" style="width: auto; padding: 12px 24px;"><i class="fas fa-plus"></i> Novo Usuário</button></div>
-                        <div class="data-table"><table><thead><tr><th>Usuário</th><th>Nome</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead><tbody id="usuariosList"></tbody></table></div>
+                        <div class="data-table">
+                            <table>
+                                <thead><tr><th>Usuário</th><th>Nome</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead>
+                                <tbody id="usuariosList"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </main>
             </div>
         </div>
     </div>
 
-    <!-- MODAIS -->
-    <div id="clientModal" class="modal"><div class="modal-content"><h2 id="clientModalTitle">Novo Cliente</h2><form id="clientForm"><input type="hidden" id="clientId"><input type="hidden" id="clientLatitude"><input type="hidden" id="clientLongitude"><input type="hidden" id="clientFotoUrl"><div class="input-group"><input type="text" id="clientNome" placeholder="Nome completo" required></div><div class="input-group"><input type="text" id="clientCpf" placeholder="CPF"></div><div class="input-group"><input type="text" id="clientTelefone" placeholder="Telefone"></div><div class="input-group"><input type="text" id="clientEndereco" placeholder="Endereço"></div><div class="input-group"><input type="text" id="clientBairro" placeholder="Bairro"></div><div class="input-group"><input type="text" id="clientCidade" placeholder="Cidade"></div><div class="input-group"><input type="text" id="clientEstado" placeholder="Estado"></div><div class="input-group"><textarea id="clientObservacoes" placeholder="Observações"></textarea></div><div class="input-group"><button type="button" class="btn-secondary" onclick="capturarLocalizacao()"><i class="fas fa-map-marker-alt"></i> Capturar Localização</button></div><div id="locationInfo" style="font-size: 12px; color: #666; margin-bottom: 10px;"></div><div class="input-group"><button type="button" class="btn-secondary" onclick="capturarFoto()"><i class="fas fa-camera"></i> Tirar Foto</button><button type="button" class="btn-secondary" onclick="selecionarFoto()" style="margin-top: 8px;"><i class="fas fa-image"></i> Selecionar da Galeria</button></div><div id="fotoPreview" style="text-align: center;"></div><button type="submit" class="btn-primary">Salvar</button><button type="button" class="btn-secondary" onclick="closeModal('clientModal')">Cancelar</button></form></div></div>
+    <!-- MODAL CLIENTE (SEM FOTO) -->
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <h2 id="clientModalTitle">Novo Cliente</h2>
+            <form id="clientForm">
+                <input type="hidden" id="clientId">
+                <input type="hidden" id="clientLatitude">
+                <input type="hidden" id="clientLongitude">
+                
+                <div class="input-group"><input type="text" id="clientNome" placeholder="Nome completo" required></div>
+                <div class="input-group"><input type="text" id="clientCpf" placeholder="CPF"></div>
+                <div class="input-group"><input type="text" id="clientTelefone" placeholder="Telefone"></div>
+                <div class="input-group"><input type="text" id="clientEndereco" placeholder="Endereço"></div>
+                <div class="input-group"><input type="text" id="clientBairro" placeholder="Bairro"></div>
+                <div class="input-group"><input type="text" id="clientCidade" placeholder="Cidade"></div>
+                <div class="input-group"><input type="text" id="clientEstado" placeholder="Estado"></div>
+                <div class="input-group"><textarea id="clientObservacoes" placeholder="Observações"></textarea></div>
+                
+                <!-- Localização GPS -->
+                <div class="input-group">
+                    <button type="button" class="btn-secondary" onclick="capturarLocalizacao()"><i class="fas fa-map-marker-alt"></i> Capturar Localização</button>
+                </div>
+                <div id="locationInfo" class="location-info" style="display: none;"></div>
+                
+                <button type="submit" class="btn-primary">Salvar</button>
+                <button type="button" class="btn-secondary" onclick="closeModal('clientModal')">Cancelar</button>
+            </form>
+        </div>
+    </div>
 
-    <div id="cobrancaModal" class="modal"><div class="modal-content"><h2>Nova Cobrança</h2><form id="cobrancaForm"><div class="input-group"><select id="cobrancaCliente" required><option value="">Selecione um cliente</option></select></div><div class="input-group"><input type="number" id="cobrancaValor" placeholder="Valor" required step="0.01"></div><div class="input-group"><input type="date" id="cobrancaVencimento" required></div><div class="input-group"><textarea id="cobrancaObs" placeholder="Observações"></textarea></div><button type="submit" class="btn-primary">Salvar</button><button type="button" class="btn-secondary" onclick="closeModal('cobrancaModal')">Cancelar</button></form></div></div>
+    <!-- MODAL COBRANÇA -->
+    <div id="cobrancaModal" class="modal">
+        <div class="modal-content">
+            <h2>Nova Cobrança</h2>
+            <form id="cobrancaForm">
+                <div class="input-group"><select id="cobrancaCliente" required><option value="">Selecione um cliente</option></select></div>
+                <div class="input-group"><input type="number" id="cobrancaValor" placeholder="Valor" required step="0.01"></div>
+                <div class="input-group"><input type="date" id="cobrancaVencimento" required></div>
+                <div class="input-group"><textarea id="cobrancaObs" placeholder="Observações"></textarea></div>
+                <button type="submit" class="btn-primary">Salvar</button>
+                <button type="button" class="btn-secondary" onclick="closeModal('cobrancaModal')">Cancelar</button>
+            </form>
+        </div>
+    </div>
 
-    <div id="pagamentoModal" class="modal"><div class="modal-content"><h2>Registrar Pagamento</h2><form id="pagamentoForm"><input type="hidden" id="pagamentoCobrancaId"><div class="input-group"><input type="number" id="pagamentoValor" placeholder="Valor recebido" required step="0.01"></div><div class="input-group"><select id="pagamentoForma" required><option value="">Selecione a forma</option><option value="PIX">PIX</option><option value="Dinheiro">Dinheiro</option><option value="Cartão">Cartão</option><option value="Transferência">Transferência</option><option value="PIX + Dinheiro">PIX + Dinheiro</option><option value="PIX + Cartão">PIX + Cartão</option><option value="Outro">Outro</option></select></div><div class="input-group"><textarea id="pagamentoObs" placeholder="Observações"></textarea></div><button type="submit" class="btn-primary">Confirmar</button><button type="button" class="btn-secondary" onclick="closeModal('pagamentoModal')">Cancelar</button></form></div></div>
+    <!-- MODAL PAGAMENTO -->
+    <div id="pagamentoModal" class="modal">
+        <div class="modal-content">
+            <h2>Registrar Pagamento</h2>
+            <form id="pagamentoForm">
+                <input type="hidden" id="pagamentoCobrancaId">
+                <div class="input-group"><input type="number" id="pagamentoValor" placeholder="Valor recebido" required step="0.01"></div>
+                <div class="input-group">
+                    <select id="pagamentoForma" required>
+                        <option value="">Selecione a forma</option>
+                        <option value="PIX">PIX</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="Cartão">Cartão</option>
+                        <option value="Transferência">Transferência</option>
+                        <option value="PIX + Dinheiro">PIX + Dinheiro</option>
+                        <option value="PIX + Cartão">PIX + Cartão</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+                <div class="input-group"><textarea id="pagamentoObs" placeholder="Observações"></textarea></div>
+                <button type="submit" class="btn-primary">Confirmar Pagamento</button>
+                <button type="button" class="btn-secondary" onclick="closeModal('pagamentoModal')">Cancelar</button>
+            </form>
+        </div>
+    </div>
 
-    <div id="userModal" class="modal"><div class="modal-content"><h2>Novo Usuário</h2><form id="userForm"><input type="hidden" id="userId"><div class="input-group"><input type="text" id="userUsername" placeholder="Usuário" required></div><div class="input-group"><input type="text" id="userNome" placeholder="Nome completo" required></div><div class="input-group"><input type="password" id="userPassword" placeholder="Senha"></div><div class="input-group"><select id="userPerfil" required><option value="admin">Administrador</option><option value="colaborador">Colaborador</option></select></div><div class="input-group"><select id="userStatus"><option value="true">Ativo</option><option value="false">Inativo</option></select></div><button type="submit" class="btn-primary">Salvar</button><button type="button" class="btn-secondary" onclick="closeModal('userModal')">Cancelar</button></form></div></div>
+    <!-- MODAL USUÁRIO -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <h2>Novo Usuário</h2>
+            <form id="userForm">
+                <input type="hidden" id="userId">
+                <div class="input-group"><input type="text" id="userUsername" placeholder="Usuário" required></div>
+                <div class="input-group"><input type="text" id="userNome" placeholder="Nome completo" required></div>
+                <div class="input-group"><input type="password" id="userPassword" placeholder="Senha"></div>
+                <div class="input-group"><select id="userPerfil" required><option value="admin">Administrador</option><option value="colaborador">Colaborador</option></select></div>
+                <div class="input-group"><select id="userStatus"><option value="true">Ativo</option><option value="false">Inativo</option></select></div>
+                <button type="submit" class="btn-primary">Salvar</button>
+                <button type="button" class="btn-secondary" onclick="closeModal('userModal')">Cancelar</button>
+            </form>
+        </div>
+    </div>
 
-    <div id="detalhesModal" class="modal"><div class="modal-content"><h2>Detalhes do Cliente</h2><div id="detalhesCliente"></div><h3>Cobranças</h3><div id="detalhesCobrancas"></div><h3>Pagamentos</h3><div id="detalhesPagamentos"></div><h3>Observações</h3><div id="detalhesObservacoes"></div><button class="btn-secondary" onclick="closeModal('detalhesModal')">Fechar</button></div></div>
+    <!-- MODAL DETALHES CLIENTE -->
+    <div id="detalhesModal" class="modal">
+        <div class="modal-content">
+            <h2>Detalhes do Cliente</h2>
+            <div id="detalhesCliente"></div>
+            <h3>Cobranças</h3>
+            <div id="detalhesCobrancas"></div>
+            <h3>Pagamentos</h3>
+            <div id="detalhesPagamentos"></div>
+            <h3>Observações</h3>
+            <div id="detalhesObservacoes"></div>
+            <button class="btn-secondary" onclick="closeModal('detalhesModal')">Fechar</button>
+        </div>
+    </div>
 
     <script>
         // =============================================
@@ -836,8 +958,8 @@
         }
         if (clients.length === 0) {
             clients = [
-                { id: 1, nome: 'João Silva', cpf: '123.456.789-00', telefone: '(11) 99999-9999', endereco: 'Rua A, 123', bairro: 'Centro', cidade: 'São Paulo', estado: 'SP', observacoes: '', latitude: '', longitude: '', foto_url: '' },
-                { id: 2, nome: 'Maria Santos', cpf: '987.654.321-00', telefone: '(11) 88888-8888', endereco: 'Rua B, 456', bairro: 'Jardins', cidade: 'São Paulo', estado: 'SP', observacoes: '', latitude: '', longitude: '', foto_url: '' }
+                { id: 1, nome: 'João Silva', cpf: '123.456.789-00', telefone: '(11) 99999-9999', endereco: 'Rua A, 123', bairro: 'Centro', cidade: 'São Paulo', estado: 'SP', observacoes: '', latitude: '', longitude: '' },
+                { id: 2, nome: 'Maria Santos', cpf: '987.654.321-00', telefone: '(11) 88888-8888', endereco: 'Rua B, 456', bairro: 'Jardins', cidade: 'São Paulo', estado: 'SP', observacoes: '', latitude: '', longitude: '' }
             ];
             localStorage.setItem('prevenir_clients', JSON.stringify(clients));
         }
@@ -915,20 +1037,37 @@
         });
 
         // =============================================
-        // FUNÇÕES DE LOCALIZAÇÃO E FOTO
+        // FUNÇÃO DE LOCALIZAÇÃO GPS
         // =============================================
+        let localizacaoAtual = { lat: '', lng: '' };
+        
         function capturarLocalizacao() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    document.getElementById('clientLatitude').value = pos.coords.latitude;
-                    document.getElementById('clientLongitude').value = pos.coords.longitude;
-                    document.getElementById('locationInfo').innerHTML = `📍 Local: ${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)} <button type="button" class="btn-secondary" style="margin-top:5px;padding:5px 10px;" onclick="window.open('https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}', '_blank')">Abrir Mapa</button>`;
-                }, () => alert('Erro ao capturar localização'));
-            } else alert('Geolocalização não suportada');
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        localizacaoAtual.lat = pos.coords.latitude;
+                        localizacaoAtual.lng = pos.coords.longitude;
+                        document.getElementById('clientLatitude').value = pos.coords.latitude;
+                        document.getElementById('clientLongitude').value = pos.coords.longitude;
+                        
+                        const locationDiv = document.getElementById('locationInfo');
+                        locationDiv.style.display = 'flex';
+                        locationDiv.innerHTML = `
+                            <span><i class="fas fa-map-marker-alt" style="color:#D4AF37;"></i> 📍 Lat: ${pos.coords.latitude.toFixed(6)}, Lng: ${pos.coords.longitude.toFixed(6)}</span>
+                            <button type="button" class="btn-secondary btn-small" onclick="abrirNoMapa()"><i class="fas fa-external-link-alt"></i> Abrir Mapa</button>
+                        `;
+                    },
+                    () => { alert('❌ Erro ao capturar localização. Verifique as permissões do GPS.'); }
+                );
+            } else { alert('❌ Geolocalização não é suportada pelo navegador.'); }
         }
-        function capturarFoto() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment'; input.onchange = (e) => previewFoto(e.target.files[0]); input.click(); }
-        function selecionarFoto() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => previewFoto(e.target.files[0]); input.click(); }
-        function previewFoto(file) { if (file) { const reader = new FileReader(); reader.onload = (e) => { document.getElementById('fotoPreview').innerHTML = `<img src="${e.target.result}" class="foto-preview" onclick="window.open('${e.target.result}','_blank')">`; document.getElementById('clientFotoUrl').value = e.target.result; }; reader.readAsDataURL(file); } }
+
+        function abrirNoMapa() {
+            const lat = document.getElementById('clientLatitude').value;
+            const lng = document.getElementById('clientLongitude').value;
+            if (lat && lng) window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+            else alert('Nenhuma localização salva para este cliente.');
+        }
 
         // =============================================
         // FUNÇÕES DE FILTRO
@@ -938,11 +1077,13 @@
             const filtered = charges.filter(c => { const cl = clients.find(cli => cli.id === c.cliente_id); return cl && cl.nome.toLowerCase().includes(currentCobrancaFilter); });
             renderCobrancasList(filtered);
         }
+        
         function filterPagamentos() {
             currentPagamentoFilter = document.getElementById('searchPagamento').value.toLowerCase();
             const filtered = payments.filter(p => { const ch = charges.find(c => c.id === p.cobranca_id); const cl = ch ? clients.find(c => c.id === ch.cliente_id) : null; return cl && cl.nome.toLowerCase().includes(currentPagamentoFilter); });
             renderPagamentosList(filtered);
         }
+        
         function renderCobrancasList(list) {
             const tbody = document.getElementById('cobrancasList');
             tbody.innerHTML = list.map(c => {
@@ -954,6 +1095,7 @@
                 return `<tr><td>${cl?.nome || '-'}</td><td>R$ ${c.valor.toFixed(2)}</td><td>${new Date(c.vencimento).toLocaleDateString()}</td><td><span class="badge ${statusClass}">${statusText}</span></td><td>${c.status !== 'paid' ? `<button class="btn-icon btn-edit" onclick="openPagamentoModal(${c.id})">Pagar</button>` : ''}</td></tr>`;
             }).join('');
         }
+        
         function renderPagamentosList(list) {
             const tbody = document.getElementById('pagamentosList');
             tbody.innerHTML = list.map(p => {
@@ -975,6 +1117,7 @@
                 return { success: false, message: 'Usuário ou senha inválidos' };
             } catch (error) { return { success: false, message: 'Erro ao conectar' }; }
         }
+        
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('username').value, password = document.getElementById('password').value;
@@ -997,6 +1140,7 @@
             }
             btn.textContent = original; btn.disabled = false;
         });
+        
         document.getElementById('logoutBtn').addEventListener('click', () => {
             localStorage.removeItem('prevenir_currentUser');
             document.getElementById('dashboardScreen').classList.remove('active');
@@ -1021,6 +1165,7 @@
                 if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('active');
             });
         });
+        
         document.getElementById('menuToggle').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('active'); });
 
         // =============================================
@@ -1028,7 +1173,12 @@
         // =============================================
         async function carregarDados() {
             try {
-                const [cRes, chRes, pRes, uRes] = await Promise.all([supabaseClient.from('clientes').select('*'), supabaseClient.from('cobrancas').select('*'), supabaseClient.from('pagamentos').select('*'), supabaseClient.from('usuarios').select('*')]);
+                const [cRes, chRes, pRes, uRes] = await Promise.all([
+                    supabaseClient.from('clientes').select('*'),
+                    supabaseClient.from('cobrancas').select('*'),
+                    supabaseClient.from('pagamentos').select('*'),
+                    supabaseClient.from('usuarios').select('*')
+                ]);
                 if (!cRes.error) { clients = cRes.data; localStorage.setItem('prevenir_clients', JSON.stringify(clients)); }
                 if (!chRes.error) { charges = chRes.data; localStorage.setItem('prevenir_charges', JSON.stringify(charges)); }
                 if (!pRes.error) { payments = pRes.data; localStorage.setItem('prevenir_payments', JSON.stringify(payments)); }
@@ -1037,7 +1187,13 @@
                 loadDashboard(); loadClientes(); loadCobrancas(); loadPagamentos(); loadUsuarios();
             } catch (error) { console.error(error); }
         }
-        function atualizarCobrancasAtrasadas() { const hoje = new Date(); let att = false; charges.forEach(c => { if (c.status !== 'paid' && new Date(c.vencimento) < hoje) { c.status = 'overdue'; att = true; } }); if (att) localStorage.setItem('prevenir_charges', JSON.stringify(charges)); }
+        
+        function atualizarCobrancasAtrasadas() { 
+            const hoje = new Date(); 
+            let att = false; 
+            charges.forEach(c => { if (c.status !== 'paid' && new Date(c.vencimento) < hoje) { c.status = 'overdue'; att = true; } }); 
+            if (att) localStorage.setItem('prevenir_charges', JSON.stringify(charges)); 
+        }
 
         // =============================================
         // LOADS
@@ -1046,32 +1202,77 @@
             const total = clients.length, pendentes = charges.filter(c => c.status !== 'paid').length, pagas = charges.filter(c => c.status === 'paid').length, atrasadas = charges.filter(c => c.status === 'overdue').length;
             const aReceber = charges.filter(c => c.status !== 'paid').reduce((s, c) => s + c.valor, 0);
             const recebidoMes = payments.filter(p => { const d = new Date(p.data_pagamento); const n = new Date(); return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear(); }).reduce((s, p) => s + p.valor_recebido, 0);
-            document.getElementById('statsGrid').innerHTML = `<div class="stat-card"><h3>Total Clientes</h3><div class="value">${total}</div></div><div class="stat-card"><h3>Cobranças Pendentes</h3><div class="value">${pendentes}</div></div><div class="stat-card"><h3>Cobranças Pagas</h3><div class="value">${pagas}</div></div><div class="stat-card"><h3>Cobranças Atrasadas</h3><div class="value">${atrasadas}</div></div><div class="stat-card"><h3>Total a Receber</h3><div class="value">R$ ${aReceber.toFixed(2)}</div></div><div class="stat-card"><h3>Recebido no Mês</h3><div class="value">R$ ${recebidoMes.toFixed(2)}</div></div>`;
-            document.getElementById('resumoFinanceiro').innerHTML = `<tr><td>Total de Clientes</td><td>${total}</td></tr><tr><td>Valor Total Pendente</td><td>R$ ${aReceber.toFixed(2)}</td></tr><tr><td>Recebido neste Mês</td><td>R$ ${recebidoMes.toFixed(2)}</td></tr>`;
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card"><h3>Total Clientes</h3><div class="value">${total}</div></div>
+                <div class="stat-card"><h3>Cobranças Pendentes</h3><div class="value">${pendentes}</div></div>
+                <div class="stat-card"><h3>Cobranças Pagas</h3><div class="value">${pagas}</div></div>
+                <div class="stat-card"><h3>Cobranças Atrasadas</h3><div class="value">${atrasadas}</div></div>
+                <div class="stat-card"><h3>Total a Receber</h3><div class="value">R$ ${aReceber.toFixed(2)}</div></div>
+                <div class="stat-card"><h3>Recebido no Mês</h3><div class="value">R$ ${recebidoMes.toFixed(2)}</div></div>
+            `;
+            document.getElementById('resumoFinanceiro').innerHTML = `
+                <tr><td>Total de Clientes</td><td>${total}</td></tr>
+                <tr><td>Valor Total Pendente</td><td>R$ ${aReceber.toFixed(2)}</td></tr>
+                <tr><td>Recebido neste Mês</td><td>R$ ${recebidoMes.toFixed(2)}</td></tr>
+            `;
         }
+        
         function loadClientes() {
             const tbody = document.getElementById('clientesList');
             tbody.innerHTML = clients.map(c => {
                 const devedor = charges.filter(ch => ch.cliente_id === c.id && ch.status !== 'paid').length > 0;
-                return `<tr><td><strong>${c.nome}</strong><br><small>${c.cpf || '-'}</small></td><td>${c.telefone || '-'}</td><td>${c.endereco || '-'} ${c.bairro || ''}</td><td>${devedor ? '<span class="badge badge-overdue">Devedor</span>' : '<span class="badge badge-paid">Regular</span>'}</td><td><button class="btn-icon btn-view" onclick="verDetalhesCliente(${c.id})"><i class="fas fa-eye"></i></button><button class="btn-icon btn-edit" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${c.id})"><i class="fas fa-trash"></i></button>` : ''}${c.latitude ? `<button class="btn-icon btn-map" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')"><i class="fas fa-map-marker-alt"></i></button>` : ''}</td></tr>`;
+                return `<tr>
+                    <td><strong>${c.nome}</strong><br><small>${c.cpf || '-'}</small></td>
+                    <td>${c.telefone || '-'}</td>
+                    <td>${c.endereco || '-'} ${c.bairro || ''}</td>
+                    <td>${devedor ? '<span class="badge badge-overdue">Devedor</span>' : '<span class="badge badge-paid">Regular</span>'}</td>
+                    <td>
+                        <button class="btn-icon btn-view" onclick="verDetalhesCliente(${c.id})"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon btn-edit" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
+                        ${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${c.id})"><i class="fas fa-trash"></i></button>` : ''}
+                        ${c.latitude ? `<button class="btn-icon btn-map" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')"><i class="fas fa-map-marker-alt"></i></button>` : ''}
+                    </td>
+                </tr>`;
             }).join('');
         }
+        
         function verDetalhesCliente(id) {
             const c = clients.find(c => c.id === id);
             const cobCliente = charges.filter(ch => ch.cliente_id === id);
             const pagCliente = payments.filter(p => { const ch = charges.find(c => c.id === p.cobranca_id); return ch && ch.cliente_id === id; });
-            document.getElementById('detalhesCliente').innerHTML = `<p><strong>Nome:</strong> ${c.nome}</p><p><strong>CPF:</strong> ${c.cpf || '-'}</p><p><strong>Telefone:</strong> ${c.telefone || '-'}</p><p><strong>Endereço:</strong> ${c.endereco || '-'} ${c.bairro || ''} ${c.cidade || ''} ${c.estado || ''}</p><p><strong>Observações:</strong> ${c.observacoes || '-'}</p>${c.latitude ? `<p><strong>Localização:</strong> <button class="btn-secondary" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')">Abrir Mapa</button></p>` : ''}${c.foto_url ? `<p><strong>Foto:</strong><br><img src="${c.foto_url}" style="max-width:100%;border-radius:12px;"></p>` : ''}`;
+            
+            document.getElementById('detalhesCliente').innerHTML = `
+                <p><strong>Nome:</strong> ${c.nome}</p>
+                <p><strong>CPF:</strong> ${c.cpf || '-'}</p>
+                <p><strong>Telefone:</strong> ${c.telefone || '-'}</p>
+                <p><strong>Endereço:</strong> ${c.endereco || '-'} ${c.bairro || ''} ${c.cidade || ''} ${c.estado || ''}</p>
+                <p><strong>Observações:</strong> ${c.observacoes || '-'}</p>
+                ${c.latitude ? `<p><strong>Localização:</strong> <button class="btn-secondary btn-small" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')"><i class="fas fa-map-marker-alt"></i> Abrir no Mapa</button></p>` : ''}
+            `;
             document.getElementById('detalhesCobrancas').innerHTML = cobCliente.length ? `<table style="width:100%"><tr><th>Valor</th><th>Vencimento</th><th>Status</th></tr>${cobCliente.map(ch => `<tr><td>R$ ${ch.valor}</td><td>${new Date(ch.vencimento).toLocaleDateString()}</td><td>${ch.status === 'paid' ? 'Pago' : (ch.status === 'overdue' ? 'Atrasado' : 'Pendente')}</td></tr>`).join('')}</table>` : 'Nenhuma cobrança';
             document.getElementById('detalhesPagamentos').innerHTML = pagCliente.length ? `<table style="width:100%"><tr><th>Valor</th><th>Forma</th><th>Data</th></tr>${pagCliente.map(p => `<tr><td>R$ ${p.valor_recebido}</td><td>${p.forma_pagamento}</td><td>${new Date(p.data_pagamento).toLocaleString()}</td></tr>`).join('')}</table>` : 'Nenhum pagamento';
             document.getElementById('detalhesObservacoes').innerHTML = c.observacoes || 'Nenhuma observação';
             document.getElementById('detalhesModal').classList.add('active');
         }
+        
         function loadCobrancas() { renderCobrancasList(charges); }
         function loadPagamentos() { renderPagamentosList(payments); }
+        
         function loadUsuarios() {
             if (currentUser?.perfil !== 'admin') return;
             const tbody = document.getElementById('usuariosList');
-            tbody.innerHTML = users.map(u => `<tr><td>${u.username}</td><td>${u.nome}</td><td>${u.perfil === 'admin' ? 'Admin' : 'Colaborador'}</td><td>${u.ativo ? 'Ativo' : 'Inativo'}</td><td><button class="btn-icon btn-edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button>${u.id !== 1 ? `<button class="btn-icon btn-delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i></button>` : ''}</td></tr>`).join('');
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td>${u.username}</td>
+                    <td>${u.nome}</td>
+                    <td>${u.perfil === 'admin' ? 'Admin' : 'Colaborador'}</td>
+                    <td>${u.ativo ? 'Ativo' : 'Inativo'}</td>
+                    <td>
+                        <button class="btn-icon btn-edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button>
+                        ${u.id !== 1 ? `<button class="btn-icon btn-delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i></button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
         }
 
         // =============================================
@@ -1092,18 +1293,29 @@
                 document.getElementById('clientObservacoes').value = c.observacoes || '';
                 document.getElementById('clientLatitude').value = c.latitude || '';
                 document.getElementById('clientLongitude').value = c.longitude || '';
-                if (c.latitude) document.getElementById('locationInfo').innerHTML = `📍 Local: ${c.latitude}, ${c.longitude}`;
-                if (c.foto_url) { document.getElementById('fotoPreview').innerHTML = `<img src="${c.foto_url}" class="foto-preview">`; document.getElementById('clientFotoUrl').value = c.foto_url; }
+                
+                if (c.latitude) {
+                    const locationDiv = document.getElementById('locationInfo');
+                    locationDiv.style.display = 'flex';
+                    locationDiv.innerHTML = `
+                        <span><i class="fas fa-map-marker-alt" style="color:#D4AF37;"></i> 📍 Lat: ${c.latitude}, Lng: ${c.longitude}</span>
+                        <button type="button" class="btn-secondary btn-small" onclick="abrirNoMapa()"><i class="fas fa-external-link-alt"></i> Abrir Mapa</button>
+                    `;
+                } else {
+                    document.getElementById('locationInfo').style.display = 'none';
+                }
                 document.getElementById('clientModal').classList.add('active');
             }
         }
+        
         async function deleteClient(id) {
-            if (confirm('Tem certeza?')) {
+            if (confirm('Tem certeza que deseja excluir este cliente?')) {
                 const { error } = await supabaseClient.from('clientes').delete().eq('id', id);
                 if (!error) { clients = clients.filter(c => c.id !== id); localStorage.setItem('prevenir_clients', JSON.stringify(clients)); loadClientes(); loadDashboard(); }
                 else alert('Erro ao excluir');
             }
         }
+        
         document.getElementById('clientForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('clientId').value;
@@ -1117,21 +1329,27 @@
                 estado: document.getElementById('clientEstado').value,
                 observacoes: document.getElementById('clientObservacoes').value,
                 latitude: document.getElementById('clientLatitude').value,
-                longitude: document.getElementById('clientLongitude').value,
-                foto_url: document.getElementById('clientFotoUrl').value
+                longitude: document.getElementById('clientLongitude').value
             };
+            
             let result;
-            if (id) { result = await supabaseClient.from('clientes').update(data).eq('id', id); if (!result.error) { const idx = clients.findIndex(c => c.id === parseInt(id)); if (idx !== -1) clients[idx] = { ...clients[idx], ...data }; } }
-            else { data.id = Date.now(); result = await supabaseClient.from('clientes').insert([data]); if (!result.error) { clients.push(data); addToPendingSync('client', data); } }
+            if (id) {
+                result = await supabaseClient.from('clientes').update(data).eq('id', id);
+                if (!result.error) { const idx = clients.findIndex(c => c.id === parseInt(id)); if (idx !== -1) clients[idx] = { ...clients[idx], ...data }; }
+            } else {
+                data.id = Date.now();
+                result = await supabaseClient.from('clientes').insert([data]);
+                if (!result.error) { clients.push(data); addToPendingSync('client', data); }
+            }
             if (!result.error) { localStorage.setItem('prevenir_clients', JSON.stringify(clients)); closeModal('clientModal'); loadClientes(); loadDashboard(); }
             else alert('Erro ao salvar');
         });
+        
         function openClientModal() {
             document.getElementById('clientModalTitle').textContent = 'Novo Cliente';
             document.getElementById('clientForm').reset();
             document.getElementById('clientId').value = '';
-            document.getElementById('locationInfo').innerHTML = '';
-            document.getElementById('fotoPreview').innerHTML = '';
+            document.getElementById('locationInfo').style.display = 'none';
             document.getElementById('clientModal').classList.add('active');
         }
 
@@ -1144,6 +1362,7 @@
             document.getElementById('cobrancaForm').reset();
             document.getElementById('cobrancaModal').classList.add('active');
         }
+        
         document.getElementById('cobrancaForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = {
@@ -1169,6 +1388,7 @@
             document.getElementById('pagamentoForm').reset();
             document.getElementById('pagamentoModal').classList.add('active');
         }
+        
         document.getElementById('pagamentoForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const cobrancaId = parseInt(document.getElementById('pagamentoCobrancaId').value);
@@ -1199,8 +1419,11 @@
         // CRUD USUÁRIOS
         // =============================================
         function openUserModal() { if (currentUser?.perfil !== 'admin') return; document.getElementById('userForm').reset(); document.getElementById('userId').value = ''; document.getElementById('userModal').classList.add('active'); }
+        
         function editUser(id) { const u = users.find(u => u.id === id); if (u) { document.getElementById('userId').value = u.id; document.getElementById('userUsername').value = u.username; document.getElementById('userNome').value = u.nome; document.getElementById('userPerfil').value = u.perfil; document.getElementById('userStatus').value = u.ativo ? 'true' : 'false'; document.getElementById('userModal').classList.add('active'); } }
+        
         async function deleteUser(id) { if (confirm('Tem certeza?')) { const { error } = await supabaseClient.from('usuarios').delete().eq('id', id); if (!error) { users = users.filter(u => u.id !== id); localStorage.setItem('prevenir_users', JSON.stringify(users)); loadUsuarios(); } } }
+        
         document.getElementById('userForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('userId').value;
@@ -1213,8 +1436,13 @@
                 ativo: document.getElementById('userStatus').value === 'true'
             };
             let result;
-            if (id) { result = await supabaseClient.from('usuarios').update(data).eq('id', id); if (!result.error) { const idx = users.findIndex(u => u.id === parseInt(id)); if (idx !== -1) users[idx] = data; } }
-            else { result = await supabaseClient.from('usuarios').insert([data]); if (!result.error) { users.push(data); addToPendingSync('user', data); } }
+            if (id) {
+                result = await supabaseClient.from('usuarios').update(data).eq('id', id);
+                if (!result.error) { const idx = users.findIndex(u => u.id === parseInt(id)); if (idx !== -1) users[idx] = data; }
+            } else {
+                result = await supabaseClient.from('usuarios').insert([data]);
+                if (!result.error) { users.push(data); addToPendingSync('user', data); }
+            }
             if (!result.error) { localStorage.setItem('prevenir_users', JSON.stringify(users)); closeModal('userModal'); loadUsuarios(); }
             else alert('Erro ao salvar');
         });
@@ -1225,12 +1453,24 @@
             const tbody = document.getElementById('clientesList');
             tbody.innerHTML = filtered.map(c => {
                 const devedor = charges.filter(ch => ch.cliente_id === c.id && ch.status !== 'paid').length > 0;
-                return `<tr><td><strong>${c.nome}</strong><br><small>${c.cpf || '-'}</small></td><td>${c.telefone || '-'}</td><td>${c.endereco || '-'} ${c.bairro || ''}</td><td>${devedor ? '<span class="badge badge-overdue">Devedor</span>' : '<span class="badge badge-paid">Regular</span>'}</td><td><button class="btn-icon btn-view" onclick="verDetalhesCliente(${c.id})"><i class="fas fa-eye"></i></button><button class="btn-icon btn-edit" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${c.id})"><i class="fas fa-trash"></i></button>` : ''}${c.latitude ? `<button class="btn-icon btn-map" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')"><i class="fas fa-map-marker-alt"></i></button>` : ''}</td></tr>`;
+                return `<tr>
+                    <td><strong>${c.nome}</strong><br><small>${c.cpf || '-'}</small></td>
+                    <td>${c.telefone || '-'}</td>
+                    <td>${c.endereco || '-'} ${c.bairro || ''}</td>
+                    <td>${devedor ? '<span class="badge badge-overdue">Devedor</span>' : '<span class="badge badge-paid">Regular</span>'}</td>
+                    <td>
+                        <button class="btn-icon btn-view" onclick="verDetalhesCliente(${c.id})"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon btn-edit" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
+                        ${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${c.id})"><i class="fas fa-trash"></i></button>` : ''}
+                        ${c.latitude ? `<button class="btn-icon btn-map" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')"><i class="fas fa-map-marker-alt"></i></button>` : ''}
+                    </td>
+                </tr>`;
             }).join('');
         }
 
         function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
 
+        // Verificar sessão salva
         const saved = localStorage.getItem('prevenir_currentUser');
         if (saved) {
             currentUser = JSON.parse(saved);
