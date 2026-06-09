@@ -8,7 +8,6 @@
     <title>Prevenir - Sistema de Gestão</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -183,7 +182,7 @@
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            min-width: 550px;
+            min-width: 500px;
         }
         th, td { padding: 12px; text-align: left; font-size: 13px; }
         th { background: #f8f8f8; color: #D4AF37; font-weight: 600; border-bottom: 2px solid #eee; }
@@ -308,7 +307,7 @@
                         <div id="logoutBtn" class="nav-item"><i class="fas fa-sign-out-alt"></i><span>Sair</span></div>
                     </nav>
                     <div class="sidebar-footer">
-                        <div id="fullscreenMenuBtn" class="fullscreen-menu-item" style="display: flex;"><i class="fas fa-expand"></i><span>Tela Cheia</span></div>
+                        <div id="fullscreenMenuBtn" class="fullscreen-menu-item"><i class="fas fa-expand"></i><span>Tela Cheia</span></div>
                     </div>
                 </aside>
 
@@ -384,4 +383,4 @@
     <!-- MODAIS -->
     <div id="clientModal" class="modal"><div class="modal-content"><h2 id="clientModalTitle">Novo Cliente</h2><form id="clientForm"><input type="hidden" id="clientId"><input type="hidden" id="clientLatitude"><input type="hidden" id="clientLongitude"><div class="input-group"><input type="text" id="clientNome" placeholder="Nome completo" required></div><div class="input-group"><input type="text" id="clientCpf" placeholder="CPF"></div><div class="input-group"><input type="text" id="clientTelefone" placeholder="Telefone"></div><div class="input-group"><input type="text" id="clientEndereco" placeholder="Endereço"></div><div class="input-group"><input type="text" id="clientBairro" placeholder="Bairro"></div><div class="input-group"><input type="text" id="clientCidade" placeholder="Cidade"></div><div class="input-group"><input type="text" id="clientEstado" placeholder="Estado"></div><div class="input-group"><textarea id="clientObservacoes" placeholder="Observações"></textarea></div><div class="row-buttons"><button type="button" class="btn-secondary" onclick="capturarLocalizacao()"><i class="fas fa-map-marker-alt"></i> GPS</button><button type="button" class="btn-secondary" onclick="ativarModoManual()"><i class="fas fa-pen"></i> Manual</button></div><div id="manualLocationPanel" style="display: none;"><div class="location-input-group"><input type="text" id="manualLat" placeholder="Latitude (ex: -23.5505)"><input type="text" id="manualLng" placeholder="Longitude (ex: -46.6333)"></div><button type="button" class="btn-secondary btn-small" onclick="aplicarLocalizacaoManual()">Aplicar</button></div><div id="locationInfo" class="location-info" style="display: none;"></div><button type="submit" class="btn-primary">Salvar</button><button type="button" class="btn-secondary" onclick="closeModal('clientModal')">Cancelar</button></form></div></div>
 
-    <div id="cobrancaModal" class="modal"><div class="modal-content"><h2>Nova Cobrança</h2><form id="cobrancaForm"><div class="input-group"><select id="cobrancaCliente" required><option value="">Selecione</option></select></div><div class="input-group"><input type="n
+    <div id="cobrancaModal" class="modal"><div class="modal-content"><h2>Nova Cobrança</h2><form id="cobrancaForm"><div class="input-group"><select id="cobrancaCliente" required><option value="">Selecione</option></select></div><div class="input-group"><input type="number" id="cobrancaValor" placeholder="Valor" required step="0.01"></div><div class="input-group"><input
