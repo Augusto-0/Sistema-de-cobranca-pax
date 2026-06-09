@@ -798,7 +798,7 @@
                         <div class="page-header"><h1>Cobranças</h1><button class="btn-primary" onclick="openCobrancaModal()" style="width: auto; padding: 10px 18px;"><i class="fas fa-plus"></i> Nova</button></div>
                         <div class="search-box"><input type="text" id="searchCobranca" placeholder="🔍 Pesquisar por cliente..." onkeyup="filterCobrancas()"></div>
                         <div class="data-table">
-                            <tr>
+                            <table>
                                 <thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead>
                                 <tbody id="cobrancasList"></tbody>
                             </table>
@@ -810,7 +810,7 @@
                         <div class="page-header"><h1>Histórico de Pagamentos</h1></div>
                         <div class="search-box"><input type="text" id="searchPagamento" placeholder="🔍 Pesquisar por cliente..." onkeyup="filterPagamentos()"></div>
                         <div class="data-table">
-                            <table>
+                            <tr>
                                 <thead><tr><th>Cliente</th><th>Valor</th><th>Forma</th><th>Data/Hora</th><th>Usuário</th></tr></thead>
                                 <tbody id="pagamentosList"></tbody>
                             </table>
@@ -821,8 +821,8 @@
                     <div id="usuariosPage" class="page">
                         <div class="page-header"><h1>Usuários</h1><button class="btn-primary" onclick="openUserModal()" style="width: auto; padding: 10px 18px;"><i class="fas fa-plus"></i> Novo</button></div>
                         <div class="data-table">
-                            </table>
-                                <thead><tr><th>Usuário</th><th>Nome</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead>
+                            <table>
+                                <thead><tr><th>Usuário</th><th>Nome</th><th>Perfil</th><th>Status</th><th>Ações</th></td></thead>
                                 <tbody id="usuariosList"></tbody>
                             </table>
                         </div>
@@ -1032,27 +1032,51 @@
         // =============================================
         async function manterBancoVivo() {
             try {
-                const fakeCliente = { nome: `KeepAlive_${Date.now()}`, cpf: `000.000.${Math.random().toString().slice(2,5)}-${Math.random().toString().slice(2,4)}`, telefone: `(11) 9${Math.floor(Math.random() * 9000 + 1000)}-${Math.floor(Math.random() * 9000 + 1000)}`, observacoes: 'Registro temporário - Keep Alive' };
+                const fakeCliente = { 
+                    nome: 'KeepAlive_' + Date.now(), 
+                    cpf: '000.000.' + Math.random().toString().slice(2,5) + '-' + Math.random().toString().slice(2,4), 
+                    telefone: '(11) 9' + Math.floor(Math.random() * 9000 + 1000) + '-' + Math.floor(Math.random() * 9000 + 1000), 
+                    observacoes: 'Registro temporário - Keep Alive' 
+                };
                 const { data, error } = await supabaseClient.from('clientes').insert([fakeCliente]).select();
                 if (error) throw error;
-                setTimeout(async () => { await supabaseClient.from('clientes').delete().eq('id', data[0].id); }, 2000);
-            } catch (error) { await supabaseClient.from('clientes').select('count'); }
+                setTimeout(async () => { 
+                    await supabaseClient.from('clientes').delete().eq('id', data[0].id); 
+                }, 2000);
+            } catch (error) { 
+                await supabaseClient.from('clientes').select('count'); 
+            }
         }
 
-        window.addEventListener('online', () => { isOnline = true; updateSyncIndicator(); if (pendingSync.length > 0 && !syncInProgress) autoSync(); });
-        window.addEventListener('offline', () => { isOnline = false; updateSyncIndicator(); });
+        window.addEventListener('online', function() { 
+            isOnline = true; 
+            updateSyncIndicator(); 
+            if (pendingSync.length > 0 && !syncInProgress) autoSync(); 
+        });
+        window.addEventListener('offline', function() { 
+            isOnline = false; 
+            updateSyncIndicator(); 
+        });
 
         // =============================================
         // FUNÇÃO DE TELA CHEIA
         // =============================================
         function toggleFullscreen() {
-            if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-compress"></i><span>Sair da Tela Cheia</span>'; } 
-            else { document.exitFullscreen(); document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-expand"></i><span>Tela Cheia</span>'; }
+            if (!document.fullscreenElement) { 
+                document.documentElement.requestFullscreen(); 
+                document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-compress"></i><span>Sair da Tela Cheia</span>'; 
+            } else { 
+                document.exitFullscreen(); 
+                document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-expand"></i><span>Tela Cheia</span>'; 
+            }
         }
         document.getElementById('fullscreenMenuBtn').addEventListener('click', toggleFullscreen);
-        document.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement) document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-compress"></i><span>Sair da Tela Cheia</span>';
-            else document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-expand"></i><span>Tela Cheia</span>';
+        document.addEventListener('fullscreenchange', function() {
+            if (document.fullscreenElement) {
+                document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-compress"></i><span>Sair da Tela Cheia</span>';
+            } else {
+                document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-expand"></i><span>Tela Cheia</span>';
+            }
         });
 
         // =============================================
@@ -1061,27 +1085,23 @@
         function capturarLocalizacao() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (pos) => {
+                    function(pos) {
                         document.getElementById('clientLatitude').value = pos.coords.latitude;
                         document.getElementById('clientLongitude').value = pos.coords.longitude;
                         
-                        const locationDiv = document.getElementById('locationInfo');
+                        var locationDiv = document.getElementById('locationInfo');
                         locationDiv.style.display = 'flex';
-                        locationDiv.innerHTML = `
-                            <span><i class="fas fa-map-marker-alt" style="color:#D4AF37;"></i> 📍 Lat: ${pos.coords.latitude.toFixed(6)}, Lng: ${pos.coords.longitude.toFixed(6)}</span>
-                            <button type="button" class="btn-secondary btn-small" onclick="abrirNoMapa()"><i class="fas fa-external-link-alt"></i> Abrir Mapa</button>
-                        `;
+                        locationDiv.innerHTML = '<span><i class="fas fa-map-marker-alt" style="color:#D4AF37;"></i> 📍 Lat: ' + pos.coords.latitude.toFixed(6) + ', Lng: ' + pos.coords.longitude.toFixed(6) + '</span><button type="button" class="btn-secondary btn-small" onclick="abrirNoMapa()"><i class="fas fa-external-link-alt"></i> Abrir Mapa</button>';
                         
-                        // Esconder painel manual se estiver aberto
                         document.getElementById('manualLocationPanel').style.display = 'none';
                     },
-                    () => { alert('❌ Erro ao capturar localização. Verifique as permissões do GPS.'); }
+                    function() { alert('❌ Erro ao capturar localização. Verifique as permissões do GPS.'); }
                 );
             } else { alert('❌ Geolocalização não é suportada pelo navegador.'); }
         }
 
         function ativarModoManual() {
-            const panel = document.getElementById('manualLocationPanel');
+            var panel = document.getElementById('manualLocationPanel');
             if (panel.style.display === 'none') {
                 panel.style.display = 'block';
             } else {
@@ -1090,16 +1110,16 @@
         }
 
         function aplicarLocalizacaoManual() {
-            const lat = document.getElementById('manualLat').value;
-            const lng = document.getElementById('manualLng').value;
+            var lat = document.getElementById('manualLat').value;
+            var lng = document.getElementById('manualLng').value;
             
             if (!lat || !lng) {
                 alert('Por favor, preencha ambos os campos (Latitude e Longitude)');
                 return;
             }
             
-            const latNum = parseFloat(lat);
-            const lngNum = parseFloat(lng);
+            var latNum = parseFloat(lat);
+            var lngNum = parseFloat(lng);
             
             if (isNaN(latNum) || isNaN(lngNum)) {
                 alert('Por favor, insira valores numéricos válidos');
@@ -1109,23 +1129,19 @@
             document.getElementById('clientLatitude').value = latNum;
             document.getElementById('clientLongitude').value = lngNum;
             
-            const locationDiv = document.getElementById('locationInfo');
+            var locationDiv = document.getElementById('locationInfo');
             locationDiv.style.display = 'flex';
-            locationDiv.innerHTML = `
-                <span><i class="fas fa-map-marker-alt" style="color:#D4AF37;"></i> 📍 Lat: ${latNum.toFixed(6)}, Lng: ${lngNum.toFixed(6)}</span>
-                <button type="button" class="btn-secondary btn-small" onclick="abrirNoMapa()"><i class="fas fa-external-link-alt"></i> Abrir Mapa</button>
-            `;
+            locationDiv.innerHTML = '<span><i class="fas fa-map-marker-alt" style="color:#D4AF37;"></i> 📍 Lat: ' + latNum.toFixed(6) + ', Lng: ' + lngNum.toFixed(6) + '</span><button type="button" class="btn-secondary btn-small" onclick="abrirNoMapa()"><i class="fas fa-external-link-alt"></i> Abrir Mapa</button>';
             
-            // Esconder painel manual
             document.getElementById('manualLocationPanel').style.display = 'none';
             document.getElementById('manualLat').value = '';
             document.getElementById('manualLng').value = '';
         }
 
         function abrirNoMapa() {
-            const lat = document.getElementById('clientLatitude').value;
-            const lng = document.getElementById('clientLongitude').value;
-            if (lat && lng) window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+            var lat = document.getElementById('clientLatitude').value;
+            var lng = document.getElementById('clientLongitude').value;
+            if (lat && lng) window.open('https://www.google.com/maps?q=' + lat + ',' + lng, '_blank');
             else alert('Nenhuma localização salva para este cliente.');
         }
 
@@ -1134,48 +1150,60 @@
         // =============================================
         function filterCobrancas() {
             currentCobrancaFilter = document.getElementById('searchCobranca').value.toLowerCase();
-            const filtered = charges.filter(c => { const cl = clients.find(cli => cli.id === c.cliente_id); return cl && cl.nome.toLowerCase().includes(currentCobrancaFilter); });
+            var filtered = charges.filter(function(c) { 
+                var cl = clients.find(function(cli) { return cli.id === c.cliente_id; }); 
+                return cl && cl.nome.toLowerCase().includes(currentCobrancaFilter); 
+            });
             renderCobrancasList(filtered);
         }
         
         function filterPagamentos() {
             currentPagamentoFilter = document.getElementById('searchPagamento').value.toLowerCase();
-            const filtered = payments.filter(p => { const ch = charges.find(c => c.id === p.cobranca_id); const cl = ch ? clients.find(c => c.id === ch.cliente_id) : null; return cl && cl.nome.toLowerCase().includes(currentPagamentoFilter); });
+            var filtered = payments.filter(function(p) { 
+                var ch = charges.find(function(c) { return c.id === p.cobranca_id; }); 
+                var cl = ch ? clients.find(function(c) { return c.id === ch.cliente_id; }) : null; 
+                return cl && cl.nome.toLowerCase().includes(currentPagamentoFilter); 
+            });
             renderPagamentosList(filtered);
         }
         
         function renderCobrancasList(list) {
-            const tbody = document.getElementById('cobrancasList');
-            tbody.innerHTML = list.map(c => {
-                const cl = clients.find(cli => cli.id === c.cliente_id);
-                const hoje = new Date(); const venc = new Date(c.vencimento);
-                let statusClass = 'badge-pending', statusText = 'Pendente';
-                if (c.status === 'paid') { statusClass = 'badge-paid'; statusText = 'Pago'; }
-                else if (venc < hoje) { statusClass = 'badge-overdue'; statusText = 'Atrasado'; }
-                return `<tr>
-                    <td>${cl?.nome || '-'}</td>
-                    <td>R$ ${c.valor.toFixed(2)}</td
-                    <td>${new Date(c.vencimento).toLocaleDateString()}</td>
-                    <td><span class="badge ${statusClass}">${statusText}</span></td>
-                    <td>${c.status !== 'paid' ? `<button class="btn-icon btn-edit" onclick="openPagamentoModal(${c.id})">Pagar</button>` : ''}</td
-                </tr>`;
-            }).join('');
+            var tbody = document.getElementById('cobrancasList');
+            var html = '';
+            for (var i = 0; i < list.length; i++) {
+                var c = list[i];
+                var cl = clients.find(function(cli) { return cli.id === c.cliente_id; });
+                var hoje = new Date();
+                var venc = new Date(c.vencimento);
+                var statusClass = 'badge-pending';
+                var statusText = 'Pendente';
+                if (c.status === 'paid') { 
+                    statusClass = 'badge-paid'; 
+                    statusText = 'Pago'; 
+                } else if (venc < hoje) { 
+                    statusClass = 'badge-overdue'; 
+                    statusText = 'Atrasado'; 
+                }
+                html += '<tr><td>' + (cl?.nome || '-') + '</td><td>R$ ' + c.valor.toFixed(2) + '</td><td>' + new Date(c.vencimento).toLocaleDateString() + '</td><td><span class="badge ' + statusClass + '">' + statusText + '</span></td><td>';
+                if (c.status !== 'paid') {
+                    html += '<button class="btn-icon btn-edit" onclick="openPagamentoModal(' + c.id + ')">Pagar</button>';
+                }
+                html += '</td></tr>';
+            }
+            tbody.innerHTML = html;
         }
         
         function renderPagamentosList(list) {
-            const tbody = document.getElementById('pagamentosList');
-            tbody.innerHTML = list.map(p => {
-                const ch = charges.find(c => c.id === p.cobranca_id);
-                const cl = ch ? clients.find(c => c.id === ch.cliente_id) : null;
-                const us = users.find(u => u.id === p.usuario_id);
-                return `<tr>
-                    <td>${cl?.nome || '-'}</td>
-                    <td>R$ ${p.valor_recebido.toFixed(2)}</td
-                    <td>${p.forma_pagamento}</td
-                    <td>${new Date(p.data_pagamento).toLocaleString()}</td
-                    <td>${us?.nome || '-'}</td
-                </tr>`;
-            }).join('');
+            var tbody = document.getElementById('pagamentosList');
+            var html = '';
+            for (var i = 0; i < list.length; i++) {
+                var p = list[i];
+                var ch = charges.find(function(c) { return c.id === p.cobranca_id; });
+                var cl = ch ? clients.find(function(c) { return c.id === ch.cliente_id; }) : null;
+                var us = users.find(function(u) { return u.id === p.usuario_id; });
+                html += '<tr><td>' + (cl?.nome || '-') + '</td><td>R$ ' + p.valor_recebido.toFixed(2) + '</td><td>' + p.forma_pagamento + '</td><td>' + new Date(p.data_pagamento).toLocaleString() + '</td><td>' + (us?.nome || '-') + '</td></tr>';
+            }
+            tbody.innerHTML = html;
         }
 
         // =============================================
@@ -1185,35 +1213,41 @@
             try {
                 const { data, error } = await supabaseClient.from('usuarios').select('*').eq('username', username).eq('senha_hash', password);
                 if (error) return { success: false, message: 'Erro de conexão' };
-                if (data?.length) return { success: true, user: data[0] };
+                if (data && data.length > 0) return { success: true, user: data[0] };
                 return { success: false, message: 'Usuário ou senha inválidos' };
             } catch (error) { return { success: false, message: 'Erro ao conectar' }; }
         }
         
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const username = document.getElementById('username').value, password = document.getElementById('password').value;
-            const btn = e.target.querySelector('button'), original = btn.textContent;
-            btn.textContent = '⏳ Conectando...'; btn.disabled = true;
-            const result = await fazerLogin(username, password);
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var btn = e.target.querySelector('button');
+            var original = btn.textContent;
+            btn.textContent = '⏳ Conectando...';
+            btn.disabled = true;
+            var result = await fazerLogin(username, password);
             if (result.success) {
                 currentUser = result.user;
                 localStorage.setItem('prevenir_currentUser', JSON.stringify(currentUser));
-                document.getElementById('loginSuccess').textContent = '✅ Login realizado!'; document.getElementById('loginSuccess').style.display = 'block';
-                setTimeout(() => {
+                document.getElementById('loginSuccess').textContent = '✅ Login realizado!';
+                document.getElementById('loginSuccess').style.display = 'block';
+                setTimeout(function() {
                     document.getElementById('loginScreen').classList.remove('active');
                     document.getElementById('dashboardScreen').classList.add('active');
                     if (currentUser.perfil !== 'admin') document.getElementById('usuariosNav').style.display = 'none';
                     carregarDados();
                 }, 500);
             } else {
-                document.getElementById('loginError').textContent = result.message; document.getElementById('loginError').style.display = 'block';
-                setTimeout(() => document.getElementById('loginError').style.display = 'none', 4000);
+                document.getElementById('loginError').textContent = result.message;
+                document.getElementById('loginError').style.display = 'block';
+                setTimeout(function() { document.getElementById('loginError').style.display = 'none'; }, 4000);
             }
-            btn.textContent = original; btn.disabled = false;
+            btn.textContent = original;
+            btn.disabled = false;
         });
         
-        document.getElementById('logoutBtn').addEventListener('click', () => {
+        document.getElementById('logoutBtn').addEventListener('click', function() {
             localStorage.removeItem('prevenir_currentUser');
             document.getElementById('dashboardScreen').classList.remove('active');
             document.getElementById('loginScreen').classList.add('active');
@@ -1222,23 +1256,34 @@
         // =============================================
         // NAVEGAÇÃO
         // =============================================
-        document.querySelectorAll('.nav-item[data-page]').forEach(item => {
-            item.addEventListener('click', () => {
-                const page = item.getAttribute('data-page');
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                document.getElementById(`${page}Page`).classList.add('active');
-                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                item.classList.add('active');
-                if (page === 'dashboard') loadDashboard();
-                if (page === 'clientes') loadClientes();
-                if (page === 'cobrancas') { loadCobrancas(); document.getElementById('searchCobranca').value = ''; }
-                if (page === 'pagamentos') { loadPagamentos(); document.getElementById('searchPagamento').value = ''; }
-                if (page === 'usuarios') loadUsuarios();
-                if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('active');
-            });
-        });
+        var navItems = document.querySelectorAll('.nav-item[data-page]');
+        for (var i = 0; i < navItems.length; i++) {
+            navItems[i].addEventListener('click', (function(item) {
+                return function() {
+                    var page = item.getAttribute('data-page');
+                    var pages = document.querySelectorAll('.page');
+                    for (var j = 0; j < pages.length; j++) {
+                        pages[j].classList.remove('active');
+                    }
+                    document.getElementById(page + 'Page').classList.add('active');
+                    var navs = document.querySelectorAll('.nav-item');
+                    for (var k = 0; k < navs.length; k++) {
+                        navs[k].classList.remove('active');
+                    }
+                    item.classList.add('active');
+                    if (page === 'dashboard') loadDashboard();
+                    if (page === 'clientes') loadClientes();
+                    if (page === 'cobrancas') { loadCobrancas(); document.getElementById('searchCobranca').value = ''; }
+                    if (page === 'pagamentos') { loadPagamentos(); document.getElementById('searchPagamento').value = ''; }
+                    if (page === 'usuarios') loadUsuarios();
+                    if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('active');
+                };
+            })(navItems[i]));
+        }
         
-        document.getElementById('menuToggle').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('active'); });
+        document.getElementById('menuToggle').addEventListener('click', function() { 
+            document.getElementById('sidebar').classList.toggle('active'); 
+        });
 
         // =============================================
         // CARREGAR DADOS
@@ -1261,9 +1306,14 @@
         }
         
         function atualizarCobrancasAtrasadas() { 
-            const hoje = new Date(); 
-            let att = false; 
-            charges.forEach(c => { if (c.status !== 'paid' && new Date(c.vencimento) < hoje) { c.status = 'overdue'; att = true; } }); 
+            var hoje = new Date(); 
+            var att = false; 
+            for (var i = 0; i < charges.length; i++) { 
+                if (charges[i].status !== 'paid' && new Date(charges[i].vencimento) < hoje) { 
+                    charges[i].status = 'overdue'; 
+                    att = true; 
+                } 
+            } 
             if (att) localStorage.setItem('prevenir_charges', JSON.stringify(charges)); 
         }
 
@@ -1271,58 +1321,115 @@
         // LOADS
         // =============================================
         function loadDashboard() {
-            const total = clients.length, pendentes = charges.filter(c => c.status !== 'paid').length, pagas = charges.filter(c => c.status === 'paid').length, atrasadas = charges.filter(c => c.status === 'overdue').length;
-            const aReceber = charges.filter(c => c.status !== 'paid').reduce((s, c) => s + c.valor, 0);
-            const recebidoMes = payments.filter(p => { const d = new Date(p.data_pagamento); const n = new Date(); return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear(); }).reduce((s, p) => s + p.valor_recebido, 0);
-            document.getElementById('statsGrid').innerHTML = `
-                <div class="stat-card"><h3>Total Clientes</h3><div class="value">${total}</div></div>
-                <div class="stat-card"><h3>Pendentes</h3><div class="value">${pendentes}</div></div>
-                <div class="stat-card"><h3>Pagas</h3><div class="value">${pagas}</div></div>
-                <div class="stat-card"><h3>Atrasadas</h3><div class="value">${atrasadas}</div></div>
-                <div class="stat-card"><h3>A Receber</h3><div class="value">R$ ${aReceber.toFixed(2)}</div></div>
-                <div class="stat-card"><h3>Recebido Mês</h3><div class="value">R$ ${recebidoMes.toFixed(2)}</div></div>
-            `;
-            document.getElementById('resumoFinanceiro').innerHTML = `
-                <tr><td>Total de Clientes</td><td>${total}</td></tr>
-                <tr><td>Valor Total Pendente</td><td>R$ ${aReceber.toFixed(2)}</td></tr>
-                <tr><td>Recebido neste Mês</td><td>R$ ${recebidoMes.toFixed(2)}</td></tr>
-            `;
+            var total = clients.length;
+            var pendentes = 0;
+            var pagas = 0;
+            var atrasadas = 0;
+            var aReceber = 0;
+            var recebidoMes = 0;
+            
+            for (var i = 0; i < charges.length; i++) {
+                if (charges[i].status !== 'paid') {
+                    pendentes++;
+                    aReceber += charges[i].valor;
+                } else {
+                    pagas++;
+                }
+                if (charges[i].status === 'overdue') atrasadas++;
+            }
+            
+            var now = new Date();
+            for (var j = 0; j < payments.length; j++) {
+                var d = new Date(payments[j].data_pagamento);
+                if (d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
+                    recebidoMes += payments[j].valor_recebido;
+                }
+            }
+            
+            document.getElementById('statsGrid').innerHTML = 
+                '<div class="stat-card"><h3>Total Clientes</h3><div class="value">' + total + '</div></div>' +
+                '<div class="stat-card"><h3>Pendentes</h3><div class="value">' + pendentes + '</div></div>' +
+                '<div class="stat-card"><h3>Pagas</h3><div class="value">' + pagas + '</div></div>' +
+                '<div class="stat-card"><h3>Atrasadas</h3><div class="value">' + atrasadas + '</div></div>' +
+                '<div class="stat-card"><h3>A Receber</h3><div class="value">R$ ' + aReceber.toFixed(2) + '</div></div>' +
+                '<div class="stat-card"><h3>Recebido Mês</h3><div class="value">R$ ' + recebidoMes.toFixed(2) + '</div></div>';
+            
+            document.getElementById('resumoFinanceiro').innerHTML = 
+                '<tr><td>Total de Clientes</td><td>' + total + '</td></tr>' +
+                '<tr><td>Valor Total Pendente</td><td>R$ ' + aReceber.toFixed(2) + '</td></tr>' +
+                '<tr><td>Recebido neste Mês</td><td>R$ ' + recebidoMes.toFixed(2) + '</td></tr>';
         }
         
         function loadClientes() {
-            const tbody = document.getElementById('clientesList');
-            tbody.innerHTML = clients.map(c => {
-                const devedor = charges.filter(ch => ch.cliente_id === c.id && ch.status !== 'paid').length > 0;
-                return `<tr>
-                    <td><strong>${c.nome}</strong><br><small style="color:#888">${c.cpf || '-'}</small></td
-                    <td>${c.telefone || '-'}</td
-                    <td>${c.endereco || '-'} ${c.bairro || ''}</td
-                    <td>${devedor ? '<span class="badge badge-overdue">Devedor</span>' : '<span class="badge badge-paid">Regular</span>'} </td
-                    <td>
-                        <button class="btn-icon btn-view" onclick="verDetalhesCliente(${c.id})"><i class="fas fa-eye"></i></button>
-                        <button class="btn-icon btn-edit" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
-                        ${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${c.id})"><i class="fas fa-trash"></i></button>` : ''}
-                        ${c.latitude ? `<button class="btn-icon btn-map" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')"><i class="fas fa-map-marker-alt"></i></button>` : ''}
-                    </td
-                </tr>`;
-            }).join('');
+            var tbody = document.getElementById('clientesList');
+            var html = '';
+            for (var i = 0; i < clients.length; i++) {
+                var c = clients[i];
+                var devedor = false;
+                for (var j = 0; j < charges.length; j++) {
+                    if (charges[j].cliente_id === c.id && charges[j].status !== 'paid') {
+                        devedor = true;
+                        break;
+                    }
+                }
+                html += '<tr><td><strong>' + c.nome + '</strong><br><small style="color:#888">' + (c.cpf || '-') + '</small></td><td>' + (c.telefone || '-') + '</td><td>' + (c.endereco || '-') + ' ' + (c.bairro || '') + '</td><td>' + (devedor ? '<span class="badge badge-overdue">Devedor</span>' : '<span class="badge badge-paid">Regular</span>') + '</td><td>' +
+                    '<button class="btn-icon btn-view" onclick="verDetalhesCliente(' + c.id + ')"><i class="fas fa-eye"></i></button>' +
+                    '<button class="btn-icon btn-edit" onclick="editClient(' + c.id + ')"><i class="fas fa-edit"></i></button>';
+                if (currentUser?.perfil === 'admin') {
+                    html += '<button class="btn-icon btn-delete" onclick="deleteClient(' + c.id + ')"><i class="fas fa-trash"></i></button>';
+                }
+                if (c.latitude) {
+                    html += '<button class="btn-icon btn-map" onclick="window.open(\'https://www.google.com/maps?q=' + c.latitude + ',' + c.longitude + '\',\'_blank\')"><i class="fas fa-map-marker-alt"></i></button>';
+                }
+                html += '</td></tr>';
+            }
+            tbody.innerHTML = html;
         }
         
         function verDetalhesCliente(id) {
-            const c = clients.find(c => c.id === id);
-            const cobCliente = charges.filter(ch => ch.cliente_id === id);
-            const pagCliente = payments.filter(p => { const ch = charges.find(c => c.id === p.cobranca_id); return ch && ch.cliente_id === id; });
+            var c = clients.find(function(cl) { return cl.id === id; });
+            var cobCliente = [];
+            for (var i = 0; i < charges.length; i++) {
+                if (charges[i].cliente_id === id) cobCliente.push(charges[i]);
+            }
+            var pagCliente = [];
+            for (var j = 0; j < payments.length; j++) {
+                var ch = charges.find(function(c) { return c.id === payments[j].cobranca_id; });
+                if (ch && ch.cliente_id === id) pagCliente.push(payments[j]);
+            }
             
-            document.getElementById('detalhesCliente').innerHTML = `
-                <p><strong>Nome:</strong> ${c.nome}</p>
-                <p><strong>CPF:</strong> ${c.cpf || '-'}</p>
-                <p><strong>Telefone:</strong> ${c.telefone || '-'}</p>
-                <p><strong>Endereço:</strong> ${c.endereco || '-'} ${c.bairro || ''} ${c.cidade || ''} ${c.estado || ''}</p>
-                <p><strong>Observações:</strong> ${c.observacoes || '-'}</p>
-                ${c.latitude ? `<p><strong>Localização:</strong> <button class="btn-secondary btn-small" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')"><i class="fas fa-map-marker-alt"></i> Abrir no Mapa</button></p>` : ''}
-            `;
-            document.getElementById('detalhesCobrancas').innerHTML = cobCliente.length ? `<div class="data-table"><table style="width:100%"><tr><th>Valor</th><th>Vencimento</th><th>Status</th></tr>${cobCliente.map(ch => `<tr><td>R$ ${ch.valor}</td><td>${new Date(ch.vencimento).toLocaleDateString()}</td><td>${ch.status === 'paid' ? 'Pago' : (ch.status === 'overdue' ? 'Atrasado' : 'Pendente')}</td></tr>`).join('')}</table></div>` : '<p>Nenhuma cobrança</p>';
-            document.getElementById('detalhesPagamentos').innerHTML = pagCliente.length ? `<div class="data-table"><table style="width:100%"><tr><th>Valor</th><th>Forma</th><th>Data</th></tr>${pagCliente.map(p => `<tr><td>R$ ${p.valor_recebido}</td><td>${p.forma_pagamento}</td><td>${new Date(p.data_pagamento).toLocaleString()}</td></tr>`).join('')}</table></div>` : '<p>Nenhum pagamento</p>';
+            document.getElementById('detalhesCliente').innerHTML = 
+                '<p><strong>Nome:</strong> ' + c.nome + '</p>' +
+                '<p><strong>CPF:</strong> ' + (c.cpf || '-') + '</p>' +
+                '<p><strong>Telefone:</strong> ' + (c.telefone || '-') + '</p>' +
+                '<p><strong>Endereço:</strong> ' + (c.endereco || '-') + ' ' + (c.bairro || '') + ' ' + (c.cidade || '') + ' ' + (c.estado || '') + '</p>' +
+                '<p><strong>Observações:</strong> ' + (c.observacoes || '-') + '</p>' +
+                (c.latitude ? '<p><strong>Localização:</strong> <button class="btn-secondary btn-small" onclick="window.open(\'https://www.google.com/maps?q=' + c.latitude + ',' + c.longitude + '\',\'_blank\')"><i class="fas fa-map-marker-alt"></i> Abrir no Mapa</button></p>' : '');
+            
+            var cobHtml = '';
+            if (cobCliente.length > 0) {
+                cobHtml = '<div class="data-table"><table style="width:100%"><tr><th>Valor</th><th>Vencimento</th><th>Status</th></tr>';
+                for (var k = 0; k < cobCliente.length; k++) {
+                    var status = cobCliente[k].status === 'paid' ? 'Pago' : (cobCliente[k].status === 'overdue' ? 'Atrasado' : 'Pendente');
+                    cobHtml += '<tr><td>R$ ' + cobCliente[k].valor + '</td><td>' + new Date(cobCliente[k].vencimento).toLocaleDateString() + '</td><td>' + status + '</td></tr>';
+                }
+                cobHtml += '</table></div>';
+            } else {
+                cobHtml = '<p>Nenhuma cobrança</p>';
+            }
+            document.getElementById('detalhesCobrancas').innerHTML = cobHtml;
+            
+            var pagHtml = '';
+            if (pagCliente.length > 0) {
+                pagHtml = '<div class="data-table"><table style="width:100%"><tr><th>Valor</th><th>Forma</th><th>Data</th></tr>';
+                for (var l = 0; l < pagCliente.length; l++) {
+                    pagHtml += '<tr><td>R$ ' + pagCliente[l].valor_recebido + '</td><td>' + pagCliente[l].forma_pagamento + '</td><td>' + new Date(pagCliente[l].data_pagamento).toLocaleString() + '</td></tr>';
+                }
+                pagHtml += '</table></div>';
+            } else {
+                pagHtml = '<p>Nenhum pagamento</p>';
+            }
+            document.getElementById('detalhesPagamentos').innerHTML = pagHtml;
             document.getElementById('detalhesObservacoes').innerHTML = c.observacoes || 'Nenhuma observação';
             document.getElementById('detalhesModal').classList.add('active');
         }
@@ -1332,26 +1439,25 @@
         
         function loadUsuarios() {
             if (currentUser?.perfil !== 'admin') return;
-            const tbody = document.getElementById('usuariosList');
-            tbody.innerHTML = users.map(u => `
-                <tr>
-                    <td>${u.username}</td
-                    <td>${u.nome}</td
-                    <td>${u.perfil === 'admin' ? 'Admin' : 'Colaborador'}</td
-                    <td>${u.ativo ? 'Ativo' : 'Inativo'}</td
-                    <td>
-                        <button class="btn-icon btn-edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button>
-                        ${u.id !== 1 ? `<button class="btn-icon btn-delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i></button>` : ''}
-                    </td
-                </tr>`;
-            }).join('');
+            var tbody = document.getElementById('usuariosList');
+            var html = '';
+            for (var i = 0; i < users.length; i++) {
+                var u = users[i];
+                html += '<tr><td>' + u.username + '</td><td>' + u.nome + '</td><td>' + (u.perfil === 'admin' ? 'Admin' : 'Colaborador') + '</td><td>' + (u.ativo ? 'Ativo' : 'Inativo') + '</td><td>' +
+                    '<button class="btn-icon btn-edit" onclick="editUser(' + u.id + ')"><i class="fas fa-edit"></i></button>';
+                if (u.id !== 1) {
+                    html += '<button class="btn-icon btn-delete" onclick="deleteUser(' + u.id + ')"><i class="fas fa-trash"></i></button>';
+                }
+                html += '</td></tr>';
+            }
+            tbody.innerHTML = html;
         }
 
         // =============================================
         // CRUD CLIENTES
         // =============================================
         function editClient(id) {
-            const c = clients.find(c => c.id === id);
+            var c = clients.find(function(cl) { return cl.id === id; });
             if (c) {
                 document.getElementById('clientModalTitle').textContent = 'Editar Cliente';
                 document.getElementById('clientId').value = c.id;
@@ -1367,12 +1473,9 @@
                 document.getElementById('clientLongitude').value = c.longitude || '';
                 
                 if (c.latitude) {
-                    const locationDiv = document.getElementById('locationInfo');
+                    var locationDiv = document.getElementById('locationInfo');
                     locationDiv.style.display = 'flex';
-                    locationDiv.innerHTML = `
-                        <span><i class="fas fa-map-marker-alt" style="color:#D4AF37;"></i> 📍 Lat: ${c.latitude}, Lng: ${c.longitude}</span>
-                        <button type="button" class="btn-secondary btn-small" onclick="abrirNoMapa()"><i class="fas fa-external-link-alt"></i> Abrir Mapa</button>
-                    `;
+                    locationDiv.innerHTML = '<span><i class="fas fa-map-marker-alt" style="color:#D4AF37;"></i> 📍 Lat: ' + c.latitude + ', Lng: ' + c.longitude + '</span><button type="button" class="btn-secondary btn-small" onclick="abrirNoMapa()"><i class="fas fa-external-link-alt"></i> Abrir Mapa</button>';
                 } else {
                     document.getElementById('locationInfo').style.display = 'none';
                 }
@@ -1383,15 +1486,19 @@
         async function deleteClient(id) {
             if (confirm('Tem certeza que deseja excluir este cliente?')) {
                 const { error } = await supabaseClient.from('clientes').delete().eq('id', id);
-                if (!error) { clients = clients.filter(c => c.id !== id); localStorage.setItem('prevenir_clients', JSON.stringify(clients)); loadClientes(); loadDashboard(); }
-                else alert('Erro ao excluir');
+                if (!error) { 
+                    clients = clients.filter(function(c) { return c.id !== id; }); 
+                    localStorage.setItem('prevenir_clients', JSON.stringify(clients)); 
+                    loadClientes(); 
+                    loadDashboard(); 
+                } else alert('Erro ao excluir');
             }
         }
         
-        document.getElementById('clientForm').addEventListener('submit', async (e) => {
+        document.getElementById('clientForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const id = document.getElementById('clientId').value;
-            const data = {
+            var id = document.getElementById('clientId').value;
+            var data = {
                 nome: document.getElementById('clientNome').value,
                 cpf: document.getElementById('clientCpf').value,
                 telefone: document.getElementById('clientTelefone').value,
@@ -1404,17 +1511,27 @@
                 longitude: document.getElementById('clientLongitude').value
             };
             
-            let result;
+            var result;
             if (id) {
                 result = await supabaseClient.from('clientes').update(data).eq('id', id);
-                if (!result.error) { const idx = clients.findIndex(c => c.id === parseInt(id)); if (idx !== -1) clients[idx] = { ...clients[idx], ...data }; }
+                if (!result.error) { 
+                    var idx = clients.findIndex(function(c) { return c.id === parseInt(id); }); 
+                    if (idx !== -1) clients[idx] = Object.assign({}, clients[idx], data); 
+                }
             } else {
                 data.id = Date.now();
                 result = await supabaseClient.from('clientes').insert([data]);
-                if (!result.error) { clients.push(data); addToPendingSync('client', data); }
+                if (!result.error) { 
+                    clients.push(data); 
+                    addToPendingSync('client', data); 
+                }
             }
-            if (!result.error) { localStorage.setItem('prevenir_clients', JSON.stringify(clients)); closeModal('clientModal'); loadClientes(); loadDashboard(); }
-            else alert('Erro ao salvar');
+            if (!result.error) { 
+                localStorage.setItem('prevenir_clients', JSON.stringify(clients)); 
+                closeModal('clientModal'); 
+                loadClientes(); 
+                loadDashboard(); 
+            } else alert('Erro ao salvar');
         });
         
         function openClientModal() {
@@ -1430,15 +1547,19 @@
         // CRUD COBRANÇAS
         // =============================================
         async function openCobrancaModal() {
-            const select = document.getElementById('cobrancaCliente');
-            select.innerHTML = '<option value="">Selecione um cliente</option>' + clients.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
+            var select = document.getElementById('cobrancaCliente');
+            var options = '<option value="">Selecione um cliente</option>';
+            for (var i = 0; i < clients.length; i++) {
+                options += '<option value="' + clients[i].id + '">' + clients[i].nome + '</option>';
+            }
+            select.innerHTML = options;
             document.getElementById('cobrancaForm').reset();
             document.getElementById('cobrancaModal').classList.add('active');
         }
         
-        document.getElementById('cobrancaForm').addEventListener('submit', async (e) => {
+        document.getElementById('cobrancaForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const data = {
+            var data = {
                 id: Date.now(),
                 cliente_id: parseInt(document.getElementById('cobrancaCliente').value),
                 valor: parseFloat(document.getElementById('cobrancaValor').value),
@@ -1447,25 +1568,31 @@
                 observacoes: document.getElementById('cobrancaObs').value
             };
             const { error } = await supabaseClient.from('cobrancas').insert([data]);
-            if (!error) { charges.push(data); localStorage.setItem('prevenir_charges', JSON.stringify(charges)); addToPendingSync('charge', data); closeModal('cobrancaModal'); loadCobrancas(); loadDashboard(); }
-            else alert('Erro ao salvar');
+            if (!error) { 
+                charges.push(data); 
+                localStorage.setItem('prevenir_charges', JSON.stringify(charges)); 
+                addToPendingSync('charge', data); 
+                closeModal('cobrancaModal'); 
+                loadCobrancas(); 
+                loadDashboard(); 
+            } else alert('Erro ao salvar');
         });
 
         // =============================================
         // PAGAMENTOS
         // =============================================
         function openPagamentoModal(chargeId) {
-            const charge = charges.find(c => c.id === chargeId);
+            var charge = charges.find(function(c) { return c.id === chargeId; });
             document.getElementById('pagamentoCobrancaId').value = chargeId;
             document.getElementById('pagamentoValor').value = charge.valor;
             document.getElementById('pagamentoForm').reset();
             document.getElementById('pagamentoModal').classList.add('active');
         }
         
-        document.getElementById('pagamentoForm').addEventListener('submit', async (e) => {
+        document.getElementById('pagamentoForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const cobrancaId = parseInt(document.getElementById('pagamentoCobrancaId').value);
-            const data = {
+            var cobrancaId = parseInt(document.getElementById('pagamentoCobrancaId').value);
+            var data = {
                 id: Date.now(),
                 cobranca_id: cobrancaId,
                 valor_recebido: parseFloat(document.getElementById('pagamentoValor').value),
@@ -1478,7 +1605,7 @@
             if (!pError) {
                 await supabaseClient.from('cobrancas').update({ status: 'paid' }).eq('id', cobrancaId);
                 payments.push(data);
-                const idx = charges.findIndex(c => c.id === cobrancaId);
+                var idx = charges.findIndex(function(c) { return c.id === cobrancaId; });
                 if (idx !== -1) charges[idx].status = 'paid';
                 localStorage.setItem('prevenir_payments', JSON.stringify(payments));
                 localStorage.setItem('prevenir_charges', JSON.stringify(charges));
@@ -1491,16 +1618,40 @@
         // =============================================
         // CRUD USUÁRIOS
         // =============================================
-        function openUserModal() { if (currentUser?.perfil !== 'admin') return; document.getElementById('userForm').reset(); document.getElementById('userId').value = ''; document.getElementById('userModal').classList.add('active'); }
+        function openUserModal() { 
+            if (currentUser?.perfil !== 'admin') return; 
+            document.getElementById('userForm').reset(); 
+            document.getElementById('userId').value = ''; 
+            document.getElementById('userModal').classList.add('active'); 
+        }
         
-        function editUser(id) { const u = users.find(u => u.id === id); if (u) { document.getElementById('userId').value = u.id; document.getElementById('userUsername').value = u.username; document.getElementById('userNome').value = u.nome; document.getElementById('userPerfil').value = u.perfil; document.getElementById('userStatus').value = u.ativo ? 'true' : 'false'; document.getElementById('userModal').classList.add('active'); } }
+        function editUser(id) { 
+            var u = users.find(function(us) { return us.id === id; }); 
+            if (u) { 
+                document.getElementById('userId').value = u.id; 
+                document.getElementById('userUsername').value = u.username; 
+                document.getElementById('userNome').value = u.nome; 
+                document.getElementById('userPerfil').value = u.perfil; 
+                document.getElementById('userStatus').value = u.ativo ? 'true' : 'false'; 
+                document.getElementById('userModal').classList.add('active'); 
+            } 
+        }
         
-        async function deleteUser(id) { if (confirm('Tem certeza?')) { const { error } = await supabaseClient.from('usuarios').delete().eq('id', id); if (!error) { users = users.filter(u => u.id !== id); localStorage.setItem('prevenir_users', JSON.stringify(users)); loadUsuarios(); } } }
+        async function deleteUser(id) { 
+            if (confirm('Tem certeza?')) { 
+                const { error } = await supabaseClient.from('usuarios').delete().eq('id', id); 
+                if (!error) { 
+                    users = users.filter(function(u) { return u.id !== id; }); 
+                    localStorage.setItem('prevenir_users', JSON.stringify(users)); 
+                    loadUsuarios(); 
+                } 
+            } 
+        }
         
-        document.getElementById('userForm').addEventListener('submit', async (e) => {
+        document.getElementById('userForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const id = document.getElementById('userId').value;
-            const data = {
+            var id = document.getElementById('userId').value;
+            var data = {
                 id: id ? parseInt(id) : Date.now(),
                 username: document.getElementById('userUsername').value,
                 senha_hash: document.getElementById('userPassword').value || '123456',
@@ -1508,52 +1659,41 @@
                 perfil: document.getElementById('userPerfil').value,
                 ativo: document.getElementById('userStatus').value === 'true'
             };
-            let result;
+            var result;
             if (id) {
                 result = await supabaseClient.from('usuarios').update(data).eq('id', id);
-                if (!result.error) { const idx = users.findIndex(u => u.id === parseInt(id)); if (idx !== -1) users[idx] = data; }
+                if (!result.error) { 
+                    var idx = users.findIndex(function(u) { return u.id === parseInt(id); }); 
+                    if (idx !== -1) users[idx] = data; 
+                }
             } else {
                 result = await supabaseClient.from('usuarios').insert([data]);
-                if (!result.error) { users.push(data); addToPendingSync('user', data); }
+                if (!result.error) { 
+                    users.push(data); 
+                    addToPendingSync('user', data); 
+                }
             }
-            if (!result.error) { localStorage.setItem('prevenir_users', JSON.stringify(users)); closeModal('userModal'); loadUsuarios(); }
-            else alert('Erro ao salvar');
+            if (!result.error) { 
+                localStorage.setItem('prevenir_users', JSON.stringify(users)); 
+                closeModal('userModal'); 
+                loadUsuarios(); 
+            } else alert('Erro ao salvar');
         });
 
         function filterClients() {
-            const search = document.getElementById('searchClient').value.toLowerCase();
-            const filtered = clients.filter(c => c.nome.toLowerCase().includes(search) || (c.cpf && c.cpf.includes(search)) || (c.telefone && c.telefone.includes(search)));
-            const tbody = document.getElementById('clientesList');
-            tbody.innerHTML = filtered.map(c => {
-                const devedor = charges.filter(ch => ch.cliente_id === c.id && ch.status !== 'paid').length > 0;
-                return `<tr>
-                    <td><strong>${c.nome}</strong><br><small style="color:#888">${c.cpf || '-'}</small></td
-                    <td>${c.telefone || '-'}</td
-                    <td>${c.endereco || '-'} ${c.bairro || ''}</td
-                    <td>${devedor ? '<span class="badge badge-overdue">Devedor</span>' : '<span class="badge badge-paid">Regular</span>'} </td
-                    <td>
-                        <button class="btn-icon btn-view" onclick="verDetalhesCliente(${c.id})"><i class="fas fa-eye"></i></button>
-                        <button class="btn-icon btn-edit" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
-                        ${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${c.id})"><i class="fas fa-trash"></i></button>` : ''}
-                        ${c.latitude ? `<button class="btn-icon btn-map" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')"><i class="fas fa-map-marker-alt"></i></button>` : ''}
-                    </td
-                </tr>`;
-            }).join('');
-        }
-
-        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
-
-        // Verificar sessão salva
-        const saved = localStorage.getItem('prevenir_currentUser');
-        if (saved) {
-            currentUser = JSON.parse(saved);
-            document.getElementById('loginScreen').classList.remove('active');
-            document.getElementById('dashboardScreen').classList.add('active');
-            if (currentUser.perfil !== 'admin') document.getElementById('usuariosNav').style.display = 'none';
-            carregarDados(); updateSyncIndicator();
-            setTimeout(manterBancoVivo, 60000);
-            setInterval(manterBancoVivo, 23 * 60 * 60 * 1000);
-        }
-    </script>
-</body>
-</html>
+            var search = document.getElementById('searchClient').value.toLowerCase();
+            var filtered = clients.filter(function(c) { 
+                return c.nome.toLowerCase().includes(search) || (c.cpf && c.cpf.includes(search)) || (c.telefone && c.telefone.includes(search)); 
+            });
+            var tbody = document.getElementById('clientesList');
+            var html = '';
+            for (var i = 0; i < filtered.length; i++) {
+                var c = filtered[i];
+                var devedor = false;
+                for (var j = 0; j < charges.length; j++) {
+                    if (charges[j].cliente_id === c.id && charges[j].status !== 'paid') {
+                        devedor = true;
+                        break;
+                    }
+                }
+                html += '<tr><td><strong>' + c.nome + '</strong><br><small style="color:#888">' + (c.cpf || '-') + '</small></td><td>' + (c.telefone || '-') + '</td
