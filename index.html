@@ -10,51 +10,110 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             min-height: 100vh;
             overflow-x: hidden;
         }
+
+        /* ========== LOGIN ========== */
         .login-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 16px;
-            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
         }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         .login-card {
-            background: white;
-            border-radius: 28px;
-            padding: 32px 24px;
+            background: rgba(255,255,255,0.98);
+            border-radius: 32px;
+            padding: 40px 32px;
             width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            animation: slideUp 0.5s ease;
-            border: 1px solid #D4AF37;
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: fadeInUp 0.6s ease-out;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(212,175,55,0.3);
         }
-        @keyframes slideUp {
+
+        @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .login-header { text-align: center; margin-bottom: 32px; }
-        .logo-container {
-            width: 100px;
-            height: 100px;
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .logo-wrapper {
+            width: 90px;
+            height: 90px;
             margin: 0 auto 20px;
             background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
-            border-radius: 60px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 20px rgba(212,175,55,0.3);
+            box-shadow: 0 10px 25px -5px rgba(212,175,55,0.4);
+            animation: pulse 2s infinite;
         }
-        .logo-text { font-size: 42px; font-weight: 800; color: white; }
-        .login-header h1 { color: #D4AF37; margin-bottom: 8px; font-size: 24px; }
-        .login-header p { color: #666; font-size: 13px; }
-        .input-group { position: relative; margin-bottom: 16px; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .logo-text {
+            font-size: 38px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            color: #1a1a2e;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .login-header p {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        /* ========== INPUTS ========== */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
         .input-group i {
             position: absolute;
             left: 16px;
@@ -62,52 +121,108 @@
             transform: translateY(-50%);
             color: #D4AF37;
             font-size: 18px;
+            transition: all 0.3s;
         }
-        .input-group input, .input-group select, .input-group textarea {
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
             width: 100%;
             padding: 14px 16px 14px 48px;
-            border: 2px solid #e0e0e0;
-            border-radius: 14px;
+            border: 2px solid #e9ecef;
+            border-radius: 16px;
             font-size: 15px;
+            transition: all 0.3s;
             font-family: 'Inter', sans-serif;
             background: white;
-            color: #333;
+            color: #2d3436;
         }
-        .input-group textarea { padding: 14px 16px; resize: vertical; min-height: 80px; }
-        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+
+        .input-group textarea {
+            padding: 14px 16px;
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
             outline: none;
             border-color: #D4AF37;
-            box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+            box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
         }
+
+        /* ========== BOTÕES ========== */
         .btn-primary {
             width: 100%;
-            padding: 16px;
+            padding: 15px;
             background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
-            color: white;
+            color: #1a1a2e;
             border: none;
-            border-radius: 14px;
+            border-radius: 16px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(212,175,55,0.3);
         }
-        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212,175,55,0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
         .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
+            background: #f1f3f5;
+            color: #495057;
             padding: 12px 20px;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 500;
             width: 100%;
             margin-top: 8px;
+            transition: all 0.2s;
         }
-        .error-message { background: #ffe0e0; color: #dc2626; padding: 12px; border-radius: 12px; margin-top: 16px; text-align: center; font-size: 13px; }
-        .success-message { background: #e0ffe0; color: #10b981; padding: 12px; border-radius: 12px; margin-top: 16px; text-align: center; font-size: 13px; }
-        
-        /* Dashboard */
-        .app-container { display: flex; min-height: 100vh; }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .error-message {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 12px;
+            border-radius: 14px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 13px;
+            border-left: 4px solid #e53e3e;
+        }
+
+        .success-message {
+            background: #f0fff4;
+            color: #38a169;
+            padding: 12px;
+            border-radius: 14px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 13px;
+            border-left: 4px solid #38a169;
+        }
+
+        /* ========== DASHBOARD LAYOUT ========== */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
         .sidebar {
             width: 280px;
             background: white;
@@ -115,137 +230,283 @@
             position: fixed;
             height: 100vh;
             overflow-y: auto;
-            transition: transform 0.3s;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
             transform: translateX(-100%);
-            border-right: 1px solid #D4AF37;
-            display: flex;
-            flex-direction: column;
+            border-right: 1px solid rgba(212,175,55,0.2);
         }
-        .sidebar.active { transform: translateX(0); }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
         .sidebar-header {
-            padding: 24px 20px;
+            padding: 28px 24px;
             text-align: center;
-            border-bottom: 1px solid #D4AF37;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            border-bottom: 1px solid rgba(212,175,55,0.2);
+            background: linear-gradient(135deg, #ffffff 0%, #fafbfc 100%);
         }
+
         .sidebar-logo {
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
-            border-radius: 30px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 12px;
+            margin: 0 auto 14px;
+            box-shadow: 0 5px 15px rgba(212,175,55,0.3);
         }
-        .sidebar-logo span { font-size: 28px; font-weight: 800; color: white; }
-        .sidebar-header h2 { font-size: 18px; color: #D4AF37; margin-bottom: 4px; }
-        .sidebar-header p { font-size: 12px; color: #666; }
-        .sidebar-nav { flex: 1; padding: 16px 0; }
+
+        .sidebar-logo span {
+            font-size: 30px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            color: #D4AF37;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: #868e96;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 0;
+        }
+
         .sidebar-footer {
             padding: 20px;
-            border-top: 1px solid #e0e0e0;
+            border-top: 1px solid rgba(0,0,0,0.05);
         }
+
         .nav-item {
             display: flex;
             align-items: center;
-            padding: 14px 20px;
-            color: #555;
+            padding: 14px 24px;
+            color: #4a5568;
             cursor: pointer;
             font-size: 15px;
+            font-weight: 500;
             transition: all 0.2s;
+            margin: 4px 12px;
+            border-radius: 12px;
         }
-        .nav-item:hover { background: #f8f8f8; color: #D4AF37; }
+
+        .nav-item:hover {
+            background: linear-gradient(90deg, #D4AF3710 0%, #FFD70010 100%);
+            color: #D4AF37;
+        }
+
         .nav-item.active {
             background: linear-gradient(90deg, #D4AF3715 0%, #FFD70015 100%);
             color: #D4AF37;
             border-right: 3px solid #D4AF37;
         }
-        .nav-item i { width: 28px; margin-right: 12px; font-size: 18px; }
+
+        .nav-item i {
+            width: 28px;
+            margin-right: 14px;
+            font-size: 18px;
+        }
+
         .fullscreen-menu-item {
             display: flex;
             align-items: center;
-            padding: 14px 20px;
-            color: #555;
+            padding: 14px 24px;
+            color: #4a5568;
             cursor: pointer;
             font-size: 15px;
+            font-weight: 500;
             transition: all 0.2s;
-            border-top: 1px solid #e0e0e0;
+            margin: 4px 12px;
+            border-radius: 12px;
+            border-top: 1px solid rgba(0,0,0,0.05);
         }
-        .fullscreen-menu-item:hover { background: #f8f8f8; color: #D4AF37; }
-        .fullscreen-menu-item i { width: 28px; margin-right: 12px; font-size: 18px; }
-        .main-content { flex: 1; margin-left: 0; padding: 16px; padding-top: 20px; padding-bottom: 80px; }
+
+        .fullscreen-menu-item:hover {
+            background: linear-gradient(90deg, #D4AF3710 0%, #FFD70010 100%);
+            color: #D4AF37;
+        }
+
+        .fullscreen-menu-item i {
+            width: 28px;
+            margin-right: 14px;
+            font-size: 18px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            margin-left: 0;
+            padding: 24px;
+            padding-top: 80px;
+        }
+
         .menu-toggle {
             position: fixed;
-            top: 12px;
-            left: 12px;
+            top: 16px;
+            left: 16px;
             z-index: 1001;
             background: white;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 12px 14px;
+            border-radius: 14px;
             cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border: 1px solid #D4AF37;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid rgba(212,175,55,0.3);
+            transition: all 0.2s;
         }
-        .menu-toggle i { font-size: 20px; color: #D4AF37; }
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 12px;
+
+        .menu-toggle:hover {
+            transform: scale(1.02);
         }
-        .page-header h1 { font-size: 22px; color: #D4AF37; }
-        .screen { display: none; }
-        .screen.active { display: block; }
-        .page { display: none; }
-        .page.active { display: block; }
-        
-        /* Cards */
+
+        .menu-toggle i {
+            font-size: 20px;
+            color: #D4AF37;
+        }
+
+        /* CARDS DO DASHBOARD */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
+
         .stat-card {
             background: white;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s;
         }
-        .stat-card h3 { color: #666; font-size: 12px; margin-bottom: 8px; }
-        .stat-card .value { font-size: 24px; font-weight: bold; color: #D4AF37; }
-        
-        /* Tabelas */
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            color: #6c757d;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #D4AF37;
+        }
+
+        /* TABELAS */
         .data-table {
             background: white;
-            border-radius: 16px;
+            border-radius: 20px;
             overflow-x: auto;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
         }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e0e0e0; font-size: 13px; color: #333; }
-        th { background: #fafafa; font-weight: 600; color: #D4AF37; font-size: 12px; }
-        
-        /* Botões de ação */
-        .btn-icon { padding: 8px 12px; margin: 0 2px; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; transition: transform 0.1s; }
-        .btn-icon:active { transform: scale(0.95); }
-        .btn-edit { background: #D4AF37; color: white; }
-        .btn-delete { background: #dc2626; color: white; }
-        .btn-view { background: #10b981; color: white; }
-        .btn-map { background: #3b82f6; color: white; }
-        
-        /* Badges */
-        .badge { padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; display: inline-block; }
-        .badge-pending { background: #fff3e0; color: #D4AF37; }
-        .badge-paid { background: #e0ffe0; color: #10b981; }
-        .badge-overdue { background: #ffe0e0; color: #dc2626; }
-        
-        /* Modais */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 550px;
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            background: #f8f9fa;
+            color: #D4AF37;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 2px solid rgba(212,175,55,0.2);
+        }
+
+        td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #2d3436;
+        }
+
+        tr:hover {
+            background: #fafbfc;
+        }
+
+        /* BOTÕES DE AÇÃO */
+        .btn-icon {
+            padding: 8px 12px;
+            margin: 0 3px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-edit {
+            background: #D4AF37;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-view {
+            background: #38a169;
+            color: white;
+        }
+
+        .btn-map {
+            background: #3182ce;
+            color: white;
+        }
+
+        /* BADGES */
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-pending {
+            background: #fff3e0;
+            color: #D4AF37;
+        }
+
+        .badge-paid {
+            background: #e6fffa;
+            color: #38a169;
+        }
+
+        .badge-overdue {
+            background: #fff5f5;
+            color: #e53e3e;
+        }
+
+        /* MODAIS */
         .modal {
             display: none;
             position: fixed;
@@ -253,83 +514,193 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             z-index: 2000;
-            align-items: flex-end;
+            align-items: center;
             justify-content: center;
+            backdrop-filter: blur(4px);
         }
-        .modal.active { display: flex; }
+
+        .modal.active {
+            display: flex;
+        }
+
         .modal-content {
             background: white;
-            border-radius: 24px 24px 0 0;
-            padding: 24px 20px 32px;
+            border-radius: 28px;
+            padding: 28px 24px;
             width: 100%;
-            max-width: 500px;
-            max-height: 90vh;
+            max-width: 520px;
+            max-height: 85vh;
             overflow-y: auto;
-            animation: slideUpModal 0.3s ease;
-            border-top: 2px solid #D4AF37;
+            animation: modalFadeIn 0.3s ease-out;
+            border-top: 4px solid #D4AF37;
         }
-        @keyframes slideUpModal {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
-        .modal-content h2 { font-size: 20px; margin-bottom: 20px; color: #D4AF37; }
-        .modal-content h3 { color: #D4AF37; margin-bottom: 15px; }
-        
-        /* Foto preview */
+
+        .modal-content h2 {
+            font-size: 22px;
+            margin-bottom: 24px;
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+        .modal-content h3 {
+            font-size: 18px;
+            margin: 20px 0 12px;
+            color: #D4AF37;
+            font-weight: 600;
+        }
+
+        /* PESQUISA */
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e9ecef;
+            border-radius: 16px;
+            font-size: 14px;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+        }
+
+        /* FOTO PREVIEW */
         .foto-preview {
             width: 100px;
             height: 100px;
-            border-radius: 12px;
+            border-radius: 16px;
             object-fit: cover;
             margin: 10px 0;
             border: 2px solid #D4AF37;
+            cursor: pointer;
         }
-        
-        /* Busca */
-        .search-box { margin-bottom: 16px; }
-        .search-box input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 14px;
-            font-size: 15px;
-            background: white;
+
+        /* PAGE HEADER */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
-        
-        /* Indicador de sincronização */
+
+        .page-header h1 {
+            font-size: 26px;
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+        /* SCREENS */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* SINCRONIZAÇÃO */
         .sync-indicator {
             position: fixed;
-            bottom: 16px;
-            right: 16px;
-            width: 8px;
-            height: 8px;
+            bottom: 20px;
+            right: 20px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: #10b981;
+            background: #38a169;
             z-index: 999;
             transition: all 0.3s;
-            opacity: 0.5;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
         }
-        .sync-indicator.syncing { background: #D4AF37; animation: pulse 1s infinite; }
-        .sync-indicator.offline { background: #f59e0b; }
-        @keyframes pulse {
-            0% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0.5; transform: scale(1); }
+
+        .sync-indicator.syncing {
+            background: #D4AF37;
+            animation: syncPulse 1s infinite;
         }
-        
+
+        .sync-indicator.offline {
+            background: #e53e3e;
+        }
+
+        @keyframes syncPulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        /* RESPONSIVIDADE */
         @media (min-width: 768px) {
-            .menu-toggle { display: none; }
-            .sidebar { transform: translateX(0); width: 260px; }
-            .main-content { margin-left: 260px; padding: 24px; }
-            .stats-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-            .modal-content { border-radius: 24px; margin: 20px; }
-            .modal { align-items: center; }
+            .menu-toggle {
+                display: none;
+            }
+            .sidebar {
+                transform: translateX(0);
+                width: 270px;
+            }
+            .main-content {
+                margin-left: 270px;
+                padding: 30px;
+                padding-top: 30px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 24px;
+            }
+            .modal-content {
+                border-radius: 28px;
+                margin: 0;
+            }
         }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #f0f0f0; }
-        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 3px; }
+
+        @media (max-width: 768px) {
+            .stat-card .value {
+                font-size: 24px;
+            }
+            .page-header h1 {
+                font-size: 22px;
+            }
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -342,7 +713,7 @@
             <div class="login-container">
                 <div class="login-card">
                     <div class="login-header">
-                        <div class="logo-container"><div class="logo-text">PR</div></div>
+                        <div class="logo-wrapper"><div class="logo-text">PR</div></div>
                         <h1>Prevenir</h1>
                         <p>Plano Funeral - Sistema de Gestão</p>
                     </div>
@@ -367,11 +738,11 @@
                         <p>Plano Funeral</p>
                     </div>
                     <nav class="sidebar-nav">
-                        <div data-page="dashboard" class="nav-item active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></div>
+                        <div data-page="dashboard" class="nav-item active"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
                         <div data-page="clientes" class="nav-item"><i class="fas fa-users"></i><span>Clientes</span></div>
                         <div data-page="cobrancas" class="nav-item"><i class="fas fa-file-invoice-dollar"></i><span>Cobranças</span></div>
                         <div data-page="pagamentos" class="nav-item"><i class="fas fa-credit-card"></i><span>Pagamentos</span></div>
-                        <div data-page="usuarios" class="nav-item" id="usuariosNav"><i class="fas fa-users-cog"></i><span>Usuários</span></div>
+                        <div data-page="usuarios" class="nav-item" id="usuariosNav"><i class="fas fa-user-shield"></i><span>Usuários</span></div>
                         <div id="logoutBtn" class="nav-item"><i class="fas fa-sign-out-alt"></i><span>Sair</span></div>
                     </nav>
                     <div class="sidebar-footer">
@@ -380,11 +751,11 @@
                 </aside>
 
                 <main class="main-content">
-                    <!-- Dashboard -->
+                    <!-- DASHBOARD -->
                     <div id="dashboardPage" class="page active">
                         <div class="page-header"><h1>Dashboard</h1></div>
                         <div class="stats-grid" id="statsGrid"></div>
-                        <div class="data-table" style="margin-top: 20px;">
+                        <div class="data-table" style="margin-top: 24px;">
                             <table>
                                 <thead><tr><th>Resumo Financeiro</th><th>Valor</th></tr></thead>
                                 <tbody id="resumoFinanceiro"></tbody>
@@ -392,174 +763,47 @@
                         </div>
                     </div>
 
-                    <!-- Clientes -->
+                    <!-- CLIENTES -->
                     <div id="clientesPage" class="page">
-                        <div class="page-header">
-                            <h1>Clientes</h1>
-                            <button class="btn-primary" onclick="openClientModal()" style="width: auto; padding: 12px 20px;"><i class="fas fa-plus"></i> Novo Cliente</button>
-                        </div>
+                        <div class="page-header"><h1>Clientes</h1><button class="btn-primary" onclick="openClientModal()" style="width: auto; padding: 12px 24px;"><i class="fas fa-plus"></i> Novo Cliente</button></div>
                         <div class="search-box"><input type="text" id="searchClient" placeholder="🔍 Pesquisar por nome, CPF ou telefone..." onkeyup="filterClients()"></div>
-                        <div class="data-table">
-                            <table><thead><tr><th>Nome</th><th>CPF</th><th>Telefone</th><th>Endereço</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="clientesList"></tbody></table>
-                        </div>
+                        <div class="data-table"><table><thead><tr><th>Nome</th><th>CPF</th><th>Telefone</th><th>Endereço</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="clientesList"></tbody></table></div>
                     </div>
 
-                    <!-- Cobranças -->
+                    <!-- COBRANÇAS -->
                     <div id="cobrancasPage" class="page">
-                        <div class="page-header">
-                            <h1>Cobranças</h1>
-                            <button class="btn-primary" onclick="openCobrancaModal()" style="width: auto; padding: 12px 20px;"><i class="fas fa-plus"></i> Nova Cobrança</button>
-                        </div>
+                        <div class="page-header"><h1>Cobranças</h1><button class="btn-primary" onclick="openCobrancaModal()" style="width: auto; padding: 12px 24px;"><i class="fas fa-plus"></i> Nova Cobrança</button></div>
                         <div class="search-box"><input type="text" id="searchCobranca" placeholder="🔍 Pesquisar por cliente..." onkeyup="filterCobrancas()"></div>
-                        <div class="data-table">
-                            <table><thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cobrancasList"></tbody></table>
-                        </div>
+                        <div class="data-table"><table><thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead><tbody id="cobrancasList"></tbody></table></div>
                     </div>
 
-                    <!-- Pagamentos -->
+                    <!-- PAGAMENTOS -->
                     <div id="pagamentosPage" class="page">
                         <div class="page-header"><h1>Histórico de Pagamentos</h1></div>
                         <div class="search-box"><input type="text" id="searchPagamento" placeholder="🔍 Pesquisar por cliente..." onkeyup="filterPagamentos()"></div>
-                        <div class="data-table">
-                            <table><thead><tr><th>Cliente</th><th>Valor</th><th>Forma</th><th>Data/Hora</th><th>Usuário</th></tr></thead><tbody id="pagamentosList"></tbody></table>
-                        </div>
+                        <div class="data-table"><table><thead><tr><th>Cliente</th><th>Valor</th><th>Forma</th><th>Data/Hora</th><th>Usuário</th></tr></thead><tbody id="pagamentosList"></tbody></table></div>
                     </div>
 
-                    <!-- Usuários -->
+                    <!-- USUÁRIOS -->
                     <div id="usuariosPage" class="page">
-                        <div class="page-header">
-                            <h1>Usuários</h1>
-                            <button class="btn-primary" onclick="openUserModal()" style="width: auto; padding: 12px 20px;"><i class="fas fa-plus"></i> Novo Usuário</button>
-                        </div>
-                        <div class="data-table">
-                            <table><thead><tr><th>Usuário</th><th>Nome</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead><tbody id="usuariosList"></tbody></table>
-                        </div>
+                        <div class="page-header"><h1>Usuários</h1><button class="btn-primary" onclick="openUserModal()" style="width: auto; padding: 12px 24px;"><i class="fas fa-plus"></i> Novo Usuário</button></div>
+                        <div class="data-table"><table><thead><tr><th>Usuário</th><th>Nome</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead><tbody id="usuariosList"></tbody></table></div>
                     </div>
                 </main>
             </div>
         </div>
     </div>
 
-    <!-- MODAL CLIENTE (COMPLETO COM FOTO E LOCALIZAÇÃO) -->
-    <div id="clientModal" class="modal">
-        <div class="modal-content">
-            <h2 id="clientModalTitle">Novo Cliente</h2>
-            <form id="clientForm">
-                <input type="hidden" id="clientId">
-                <input type="hidden" id="clientLatitude">
-                <input type="hidden" id="clientLongitude">
-                <input type="hidden" id="clientFotoUrl">
-                
-                <div class="input-group"><input type="text" id="clientNome" placeholder="Nome completo" required></div>
-                <div class="input-group"><input type="text" id="clientCpf" placeholder="CPF"></div>
-                <div class="input-group"><input type="text" id="clientTelefone" placeholder="Telefone"></div>
-                <div class="input-group"><input type="text" id="clientEndereco" placeholder="Endereço"></div>
-                <div class="input-group"><input type="text" id="clientBairro" placeholder="Bairro"></div>
-                <div class="input-group"><input type="text" id="clientCidade" placeholder="Cidade"></div>
-                <div class="input-group"><input type="text" id="clientEstado" placeholder="Estado"></div>
-                <div class="input-group"><textarea id="clientObservacoes" placeholder="Observações"></textarea></div>
-                
-                <!-- Localização GPS -->
-                <div class="input-group">
-                    <button type="button" class="btn-secondary" onclick="capturarLocalizacao()"><i class="fas fa-map-marker-alt"></i> Capturar Localização</button>
-                </div>
-                <div id="locationInfo" style="font-size: 12px; color: #666; margin-bottom: 10px;"></div>
-                
-                <!-- Foto -->
-                <div class="input-group">
-                    <button type="button" class="btn-secondary" onclick="capturarFoto()"><i class="fas fa-camera"></i> Tirar Foto</button>
-                    <button type="button" class="btn-secondary" onclick="selecionarFoto()" style="margin-top: 5px;"><i class="fas fa-image"></i> Selecionar da Galeria</button>
-                </div>
-                <div id="fotoPreview" style="text-align: center;"></div>
-                
-                <button type="submit" class="btn-primary">Salvar</button>
-                <button type="button" class="btn-secondary" onclick="closeModal('clientModal')">Cancelar</button>
-            </form>
-        </div>
-    </div>
+    <!-- MODAIS -->
+    <div id="clientModal" class="modal"><div class="modal-content"><h2 id="clientModalTitle">Novo Cliente</h2><form id="clientForm"><input type="hidden" id="clientId"><input type="hidden" id="clientLatitude"><input type="hidden" id="clientLongitude"><input type="hidden" id="clientFotoUrl"><div class="input-group"><input type="text" id="clientNome" placeholder="Nome completo" required></div><div class="input-group"><input type="text" id="clientCpf" placeholder="CPF"></div><div class="input-group"><input type="text" id="clientTelefone" placeholder="Telefone"></div><div class="input-group"><input type="text" id="clientEndereco" placeholder="Endereço"></div><div class="input-group"><input type="text" id="clientBairro" placeholder="Bairro"></div><div class="input-group"><input type="text" id="clientCidade" placeholder="Cidade"></div><div class="input-group"><input type="text" id="clientEstado" placeholder="Estado"></div><div class="input-group"><textarea id="clientObservacoes" placeholder="Observações"></textarea></div><div class="input-group"><button type="button" class="btn-secondary" onclick="capturarLocalizacao()"><i class="fas fa-map-marker-alt"></i> Capturar Localização</button></div><div id="locationInfo" style="font-size: 12px; color: #666; margin-bottom: 10px;"></div><div class="input-group"><button type="button" class="btn-secondary" onclick="capturarFoto()"><i class="fas fa-camera"></i> Tirar Foto</button><button type="button" class="btn-secondary" onclick="selecionarFoto()" style="margin-top: 8px;"><i class="fas fa-image"></i> Selecionar da Galeria</button></div><div id="fotoPreview" style="text-align: center;"></div><button type="submit" class="btn-primary">Salvar</button><button type="button" class="btn-secondary" onclick="closeModal('clientModal')">Cancelar</button></form></div></div>
 
-    <!-- MODAL COBRANÇA -->
-    <div id="cobrancaModal" class="modal">
-        <div class="modal-content">
-            <h2>Nova Cobrança</h2>
-            <form id="cobrancaForm">
-                <div class="input-group"><select id="cobrancaCliente" required><option value="">Selecione um cliente</option></select></div>
-                <div class="input-group"><input type="number" id="cobrancaValor" placeholder="Valor" required step="0.01"></div>
-                <div class="input-group"><input type="date" id="cobrancaVencimento" required></div>
-                <div class="input-group"><textarea id="cobrancaObs" placeholder="Observações"></textarea></div>
-                <button type="submit" class="btn-primary">Salvar</button>
-                <button type="button" class="btn-secondary" onclick="closeModal('cobrancaModal')">Cancelar</button>
-            </form>
-        </div>
-    </div>
+    <div id="cobrancaModal" class="modal"><div class="modal-content"><h2>Nova Cobrança</h2><form id="cobrancaForm"><div class="input-group"><select id="cobrancaCliente" required><option value="">Selecione um cliente</option></select></div><div class="input-group"><input type="number" id="cobrancaValor" placeholder="Valor" required step="0.01"></div><div class="input-group"><input type="date" id="cobrancaVencimento" required></div><div class="input-group"><textarea id="cobrancaObs" placeholder="Observações"></textarea></div><button type="submit" class="btn-primary">Salvar</button><button type="button" class="btn-secondary" onclick="closeModal('cobrancaModal')">Cancelar</button></form></div></div>
 
-    <!-- MODAL PAGAMENTO -->
-    <div id="pagamentoModal" class="modal">
-        <div class="modal-content">
-            <h2>Registrar Pagamento</h2>
-            <form id="pagamentoForm">
-                <input type="hidden" id="pagamentoCobrancaId">
-                <div class="input-group"><input type="number" id="pagamentoValor" placeholder="Valor recebido" required step="0.01"></div>
-                <div class="input-group">
-                    <select id="pagamentoForma" required>
-                        <option value="">Selecione a forma</option>
-                        <option value="PIX">PIX</option>
-                        <option value="Dinheiro">Dinheiro</option>
-                        <option value="Cartão">Cartão</option>
-                        <option value="Transferência">Transferência</option>
-                        <option value="PIX + Dinheiro">PIX + Dinheiro</option>
-                        <option value="PIX + Cartão">PIX + Cartão</option>
-                        <option value="Outro">Outro</option>
-                    </select>
-                </div>
-                <div class="input-group"><textarea id="pagamentoObs" placeholder="Observações"></textarea></div>
-                <button type="submit" class="btn-primary">Confirmar Pagamento</button>
-                <button type="button" class="btn-secondary" onclick="closeModal('pagamentoModal')">Cancelar</button>
-            </form>
-        </div>
-    </div>
+    <div id="pagamentoModal" class="modal"><div class="modal-content"><h2>Registrar Pagamento</h2><form id="pagamentoForm"><input type="hidden" id="pagamentoCobrancaId"><div class="input-group"><input type="number" id="pagamentoValor" placeholder="Valor recebido" required step="0.01"></div><div class="input-group"><select id="pagamentoForma" required><option value="">Selecione a forma</option><option value="PIX">PIX</option><option value="Dinheiro">Dinheiro</option><option value="Cartão">Cartão</option><option value="Transferência">Transferência</option><option value="PIX + Dinheiro">PIX + Dinheiro</option><option value="PIX + Cartão">PIX + Cartão</option><option value="Outro">Outro</option></select></div><div class="input-group"><textarea id="pagamentoObs" placeholder="Observações"></textarea></div><button type="submit" class="btn-primary">Confirmar</button><button type="button" class="btn-secondary" onclick="closeModal('pagamentoModal')">Cancelar</button></form></div></div>
 
-    <!-- MODAL USUÁRIO -->
-    <div id="userModal" class="modal">
-        <div class="modal-content">
-            <h2>Novo Usuário</h2>
-            <form id="userForm">
-                <input type="hidden" id="userId">
-                <div class="input-group"><input type="text" id="userUsername" placeholder="Usuário" required></div>
-                <div class="input-group"><input type="text" id="userNome" placeholder="Nome completo" required></div>
-                <div class="input-group"><input type="password" id="userPassword" placeholder="Senha"></div>
-                <div class="input-group">
-                    <select id="userPerfil" required>
-                        <option value="admin">Administrador</option>
-                        <option value="colaborador">Colaborador</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <select id="userStatus">
-                        <option value="true">Ativo</option>
-                        <option value="false">Inativo</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-primary">Salvar</button>
-                <button type="button" class="btn-secondary" onclick="closeModal('userModal')">Cancelar</button>
-            </form>
-        </div>
-    </div>
+    <div id="userModal" class="modal"><div class="modal-content"><h2>Novo Usuário</h2><form id="userForm"><input type="hidden" id="userId"><div class="input-group"><input type="text" id="userUsername" placeholder="Usuário" required></div><div class="input-group"><input type="text" id="userNome" placeholder="Nome completo" required></div><div class="input-group"><input type="password" id="userPassword" placeholder="Senha"></div><div class="input-group"><select id="userPerfil" required><option value="admin">Administrador</option><option value="colaborador">Colaborador</option></select></div><div class="input-group"><select id="userStatus"><option value="true">Ativo</option><option value="false">Inativo</option></select></div><button type="submit" class="btn-primary">Salvar</button><button type="button" class="btn-secondary" onclick="closeModal('userModal')">Cancelar</button></form></div></div>
 
-    <!-- MODAL DETALHES DO CLIENTE -->
-    <div id="detalhesModal" class="modal">
-        <div class="modal-content">
-            <h2>Detalhes do Cliente</h2>
-            <div id="detalhesCliente"></div>
-            <h3>Cobranças</h3>
-            <div id="detalhesCobrancas"></div>
-            <h3>Pagamentos</h3>
-            <div id="detalhesPagamentos"></div>
-            <h3>Histórico de Observações</h3>
-            <div id="detalhesObservacoes"></div>
-            <button class="btn-secondary" onclick="closeModal('detalhesModal')">Fechar</button>
-        </div>
-    </div>
+    <div id="detalhesModal" class="modal"><div class="modal-content"><h2>Detalhes do Cliente</h2><div id="detalhesCliente"></div><h3>Cobranças</h3><div id="detalhesCobrancas"></div><h3>Pagamentos</h3><div id="detalhesPagamentos"></div><h3>Observações</h3><div id="detalhesObservacoes"></div><button class="btn-secondary" onclick="closeModal('detalhesModal')">Fechar</button></div></div>
 
     <script>
         // =============================================
@@ -567,7 +811,6 @@
         // =============================================
         const SUPABASE_URL = 'https://xokavabzhgayxpbmicxs.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhva2F2YWJ6aGdheXhwYm1pY3hzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NjEzNDksImV4cCI6MjA5NjUzNzM0OX0.1vCSRpqYFkfEiABuA6m5oHLnEORCx2jhXxb2RhBwPNk';
-        
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // =============================================
@@ -579,28 +822,18 @@
         let payments = JSON.parse(localStorage.getItem('prevenir_payments') || '[]');
         let users = JSON.parse(localStorage.getItem('prevenir_users') || '[]');
         let pendingSync = JSON.parse(localStorage.getItem('prevenir_pending_sync') || '[]');
-        
         let isOnline = navigator.onLine;
         let syncInProgress = false;
         let currentCobrancaFilter = '';
         let currentPagamentoFilter = '';
-        let currentFileInput = null;
 
         // =============================================
         // INICIALIZAR DADOS PADRÃO
         // =============================================
         if (users.length === 0) {
-            users = [{
-                id: 1,
-                username: 'Yagil',
-                senha_hash: 'admin123',
-                nome: 'Administrador',
-                perfil: 'admin',
-                ativo: true
-            }];
+            users = [{ id: 1, username: 'Yagil', senha_hash: 'admin123', nome: 'Administrador', perfil: 'admin', ativo: true }];
             localStorage.setItem('prevenir_users', JSON.stringify(users));
         }
-
         if (clients.length === 0) {
             clients = [
                 { id: 1, nome: 'João Silva', cpf: '123.456.789-00', telefone: '(11) 99999-9999', endereco: 'Rua A, 123', bairro: 'Centro', cidade: 'São Paulo', estado: 'SP', observacoes: '', latitude: '', longitude: '', foto_url: '' },
@@ -608,7 +841,6 @@
             ];
             localStorage.setItem('prevenir_clients', JSON.stringify(clients));
         }
-
         if (charges.length === 0) {
             charges = [
                 { id: 1, cliente_id: 1, valor: 1500, vencimento: '2024-12-15', status: 'pending', observacoes: '' },
@@ -635,7 +867,6 @@
             try {
                 for (let i = 0; i < pendingSync.length; i++) {
                     const item = pendingSync[i];
-                    console.log(`[AutoSync] Enviando ${item.type}:`, item.data);
                     if (item.type === 'client') await supabaseClient.from('clientes').upsert(item.data);
                     else if (item.type === 'charge') await supabaseClient.from('cobrancas').upsert(item.data);
                     else if (item.type === 'payment') await supabaseClient.from('pagamentos').upsert(item.data);
@@ -644,8 +875,7 @@
                 }
                 pendingSync = [];
                 localStorage.setItem('prevenir_pending_sync', JSON.stringify(pendingSync));
-                console.log('[AutoSync] Sincronização concluída!');
-            } catch (error) { console.error('[AutoSync] Erro:', error); }
+            } catch (error) { console.error('Sync error:', error); }
             finally { syncInProgress = false; updateSyncIndicator(); }
         }
 
@@ -660,23 +890,14 @@
         // KEEP-ALIVE (A CADA 23 HORAS)
         // =============================================
         async function manterBancoVivo() {
-            console.log('🔄 Mantendo banco ativo...', new Date().toLocaleString());
             try {
-                const fakeCliente = {
-                    nome: `KeepAlive_${Date.now()}`,
-                    cpf: `000.000.${Math.random().toString().slice(2,5)}-${Math.random().toString().slice(2,4)}`,
-                    telefone: `(11) 9${Math.floor(Math.random() * 9000 + 1000)}-${Math.floor(Math.random() * 9000 + 1000)}`,
-                    observacoes: 'Registro temporário - Sistema Keep Alive'
-                };
-                const { data, error: insertError } = await supabaseClient.from('clientes').insert([fakeCliente]).select();
-                if (insertError) throw insertError;
-                setTimeout(async () => { await supabaseClient.from('clientes').delete().eq('id', data[0].id); console.log('✅ Keep-Alive executado!'); }, 2000);
-            } catch (error) { console.error('❌ Erro no Keep-Alive:', error.message); await supabaseClient.from('clientes').select('count'); }
+                const fakeCliente = { nome: `KeepAlive_${Date.now()}`, cpf: `000.000.${Math.random().toString().slice(2,5)}-${Math.random().toString().slice(2,4)}`, telefone: `(11) 9${Math.floor(Math.random() * 9000 + 1000)}-${Math.floor(Math.random() * 9000 + 1000)}`, observacoes: 'Registro temporário - Keep Alive' };
+                const { data, error } = await supabaseClient.from('clientes').insert([fakeCliente]).select();
+                if (error) throw error;
+                setTimeout(async () => { await supabaseClient.from('clientes').delete().eq('id', data[0].id); }, 2000);
+            } catch (error) { await supabaseClient.from('clientes').select('count'); }
         }
 
-        // =============================================
-        // EVENTOS DE CONEXÃO
-        // =============================================
         window.addEventListener('online', () => { isOnline = true; updateSyncIndicator(); if (pendingSync.length > 0 && !syncInProgress) autoSync(); });
         window.addEventListener('offline', () => { isOnline = false; updateSyncIndicator(); });
 
@@ -684,13 +905,8 @@
         // FUNÇÃO DE TELA CHEIA
         // =============================================
         function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-compress"></i><span>Sair da Tela Cheia</span>';
-            } else {
-                document.exitFullscreen();
-                document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-expand"></i><span>Tela Cheia</span>';
-            }
+            if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-compress"></i><span>Sair da Tela Cheia</span>'; } 
+            else { document.exitFullscreen(); document.getElementById('fullscreenMenuBtn').innerHTML = '<i class="fas fa-expand"></i><span>Tela Cheia</span>'; }
         }
         document.getElementById('fullscreenMenuBtn').addEventListener('click', toggleFullscreen);
         document.addEventListener('fullscreenchange', () => {
@@ -699,164 +915,92 @@
         });
 
         // =============================================
-        // FUNÇÕES DE LOCALIZAÇÃO GPS
+        // FUNÇÕES DE LOCALIZAÇÃO E FOTO
         // =============================================
         function capturarLocalizacao() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    document.getElementById('clientLatitude').value = position.coords.latitude;
-                    document.getElementById('clientLongitude').value = position.coords.longitude;
-                    document.getElementById('locationInfo').innerHTML = `📍 Localização capturada: Lat ${position.coords.latitude.toFixed(6)}, Lng ${position.coords.longitude.toFixed(6)}`;
-                    
-                    // Adicionar botão para abrir no mapa
-                    const mapBtn = document.createElement('button');
-                    mapBtn.type = 'button';
-                    mapBtn.className = 'btn-secondary';
-                    mapBtn.style.marginTop = '5px';
-                    mapBtn.innerHTML = '<i class="fas fa-map"></i> Abrir no Google Maps';
-                    mapBtn.onclick = () => {
-                        window.open(`https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`, '_blank');
-                    };
-                    document.getElementById('locationInfo').appendChild(mapBtn);
-                }, () => { alert('Erro ao capturar localização. Verifique as permissões.'); });
-            } else { alert('Geolocalização não é suportada pelo navegador'); }
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    document.getElementById('clientLatitude').value = pos.coords.latitude;
+                    document.getElementById('clientLongitude').value = pos.coords.longitude;
+                    document.getElementById('locationInfo').innerHTML = `📍 Local: ${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)} <button type="button" class="btn-secondary" style="margin-top:5px;padding:5px 10px;" onclick="window.open('https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}', '_blank')">Abrir Mapa</button>`;
+                }, () => alert('Erro ao capturar localização'));
+            } else alert('Geolocalização não suportada');
         }
-
-        // =============================================
-        // FUNÇÕES DE FOTO (CÂMERA E GALERIA)
-        // =============================================
-        function capturarFoto() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.capture = 'environment';
-            input.onchange = (e) => previewFoto(e.target.files[0]);
-            input.click();
-        }
-
-        function selecionarFoto() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => previewFoto(e.target.files[0]);
-            input.click();
-        }
-
-        function previewFoto(file) {
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const previewDiv = document.getElementById('fotoPreview');
-                    previewDiv.innerHTML = `<img src="${e.target.result}" class="foto-preview" onclick="abrirFotoAmpliada('${e.target.result}')">`;
-                    // Converter para base64 para salvar no localStorage (simplificado)
-                    document.getElementById('clientFotoUrl').value = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function abrirFotoAmpliada(url) { window.open(url, '_blank'); }
+        function capturarFoto() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.capture = 'environment'; input.onchange = (e) => previewFoto(e.target.files[0]); input.click(); }
+        function selecionarFoto() { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => previewFoto(e.target.files[0]); input.click(); }
+        function previewFoto(file) { if (file) { const reader = new FileReader(); reader.onload = (e) => { document.getElementById('fotoPreview').innerHTML = `<img src="${e.target.result}" class="foto-preview" onclick="window.open('${e.target.result}','_blank')">`; document.getElementById('clientFotoUrl').value = e.target.result; }; reader.readAsDataURL(file); } }
 
         // =============================================
         // FUNÇÕES DE FILTRO
         // =============================================
         function filterCobrancas() {
             currentCobrancaFilter = document.getElementById('searchCobranca').value.toLowerCase();
-            const filtered = charges.filter(charge => { const client = clients.find(c => c.id === charge.cliente_id); return client && client.nome.toLowerCase().includes(currentCobrancaFilter); });
+            const filtered = charges.filter(c => { const cl = clients.find(cli => cli.id === c.cliente_id); return cl && cl.nome.toLowerCase().includes(currentCobrancaFilter); });
             renderCobrancasList(filtered);
         }
-        
         function filterPagamentos() {
             currentPagamentoFilter = document.getElementById('searchPagamento').value.toLowerCase();
-            const filtered = payments.filter(payment => { const charge = charges.find(c => c.id === payment.cobranca_id); const client = charge ? clients.find(c => c.id === charge.cliente_id) : null; return client && client.nome.toLowerCase().includes(currentPagamentoFilter); });
+            const filtered = payments.filter(p => { const ch = charges.find(c => c.id === p.cobranca_id); const cl = ch ? clients.find(c => c.id === ch.cliente_id) : null; return cl && cl.nome.toLowerCase().includes(currentPagamentoFilter); });
             renderPagamentosList(filtered);
         }
-        
-        function renderCobrancasList(chargesToRender) {
+        function renderCobrancasList(list) {
             const tbody = document.getElementById('cobrancasList');
-            tbody.innerHTML = chargesToRender.map(charge => {
-                const client = clients.find(c => c.id === charge.cliente_id);
-                const hoje = new Date();
-                const vencimento = new Date(charge.vencimento);
-                let statusClass = 'badge-pending';
-                let statusText = 'Pendente';
-                if (charge.status === 'paid') { statusClass = 'badge-paid'; statusText = 'Pago'; }
-                else if (vencimento < hoje && charge.status !== 'paid') { statusClass = 'badge-overdue'; statusText = 'Atrasado'; }
-                return `<tr>
-                    <td>${client?.nome || '-'}</td>
-                    <td>R$ ${charge.valor.toFixed(2)}</td>
-                    <td>${new Date(charge.vencimento).toLocaleDateString()}</td>
-                    <td><span class="badge ${statusClass}">${statusText}</span></td>
-                    <td>${charge.status !== 'paid' ? `<button class="btn-icon btn-edit" onclick="openPagamentoModal(${charge.id})">Pagar</button>` : ''}</td>
-                </tr>`;
+            tbody.innerHTML = list.map(c => {
+                const cl = clients.find(cli => cli.id === c.cliente_id);
+                const hoje = new Date(); const venc = new Date(c.vencimento);
+                let statusClass = 'badge-pending', statusText = 'Pendente';
+                if (c.status === 'paid') { statusClass = 'badge-paid'; statusText = 'Pago'; }
+                else if (venc < hoje) { statusClass = 'badge-overdue'; statusText = 'Atrasado'; }
+                return `<tr><td>${cl?.nome || '-'}</td><td>R$ ${c.valor.toFixed(2)}</td><td>${new Date(c.vencimento).toLocaleDateString()}</td><td><span class="badge ${statusClass}">${statusText}</span></td><td>${c.status !== 'paid' ? `<button class="btn-icon btn-edit" onclick="openPagamentoModal(${c.id})">Pagar</button>` : ''}</td></tr>`;
             }).join('');
         }
-        
-        function renderPagamentosList(paymentsToRender) {
+        function renderPagamentosList(list) {
             const tbody = document.getElementById('pagamentosList');
-            tbody.innerHTML = paymentsToRender.map(payment => {
-                const charge = charges.find(c => c.id === payment.cobranca_id);
-                const client = charge ? clients.find(c => c.id === charge.cliente_id) : null;
-                const user = users.find(u => u.id === payment.usuario_id);
-                return `<tr>
-                    <td>${client?.nome || '-'}</td>
-                    <td>R$ ${payment.valor_recebido.toFixed(2)}</td>
-                    <td>${payment.forma_pagamento}</td>
-                    <td>${new Date(payment.data_pagamento).toLocaleString()}</td>
-                    <td>${user?.nome || '-'}</td>
-                </tr>`;
+            tbody.innerHTML = list.map(p => {
+                const ch = charges.find(c => c.id === p.cobranca_id);
+                const cl = ch ? clients.find(c => c.id === ch.cliente_id) : null;
+                const us = users.find(u => u.id === p.usuario_id);
+                return `<tr><td>${cl?.nome || '-'}</td><td>R$ ${p.valor_recebido.toFixed(2)}</td><td>${p.forma_pagamento}</td><td>${new Date(p.data_pagamento).toLocaleString()}</td><td>${us?.nome || '-'}</td></tr>`;
             }).join('');
         }
 
         // =============================================
-        // FUNÇÕES DE LOGIN
+        // LOGIN
         // =============================================
         async function fazerLogin(username, password) {
             try {
-                console.log('🔍 Tentando login com:', username);
                 const { data, error } = await supabaseClient.from('usuarios').select('*').eq('username', username).eq('senha_hash', password);
-                if (error) return { success: false, message: 'Erro de conexão: ' + error.message };
-                if (data && data.length > 0) return { success: true, user: data[0] };
-                else return { success: false, message: 'Usuário ou senha inválidos' };
-            } catch (error) { return { success: false, message: 'Erro ao conectar: ' + error.message }; }
+                if (error) return { success: false, message: 'Erro de conexão' };
+                if (data?.length) return { success: true, user: data[0] };
+                return { success: false, message: 'Usuário ou senha inválidos' };
+            } catch (error) { return { success: false, message: 'Erro ao conectar' }; }
         }
-        
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const btn = e.target.querySelector('button');
-            const originalText = btn.textContent;
-            btn.textContent = '⏳ Conectando...';
-            btn.disabled = true;
+            const username = document.getElementById('username').value, password = document.getElementById('password').value;
+            const btn = e.target.querySelector('button'), original = btn.textContent;
+            btn.textContent = '⏳ Conectando...'; btn.disabled = true;
             const result = await fazerLogin(username, password);
             if (result.success) {
                 currentUser = result.user;
                 localStorage.setItem('prevenir_currentUser', JSON.stringify(currentUser));
-                document.getElementById('loginSuccess').textContent = '✅ Login realizado!';
-                document.getElementById('loginSuccess').style.display = 'block';
+                document.getElementById('loginSuccess').textContent = '✅ Login realizado!'; document.getElementById('loginSuccess').style.display = 'block';
                 setTimeout(() => {
                     document.getElementById('loginScreen').classList.remove('active');
                     document.getElementById('dashboardScreen').classList.add('active');
                     if (currentUser.perfil !== 'admin') document.getElementById('usuariosNav').style.display = 'none';
-                    else document.getElementById('usuariosNav').style.display = 'flex';
                     carregarDados();
                 }, 500);
             } else {
-                document.getElementById('loginError').textContent = result.message;
-                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('loginError').textContent = result.message; document.getElementById('loginError').style.display = 'block';
                 setTimeout(() => document.getElementById('loginError').style.display = 'none', 4000);
             }
-            btn.textContent = originalText;
-            btn.disabled = false;
+            btn.textContent = original; btn.disabled = false;
         });
-        
         document.getElementById('logoutBtn').addEventListener('click', () => {
-            currentUser = null;
             localStorage.removeItem('prevenir_currentUser');
             document.getElementById('dashboardScreen').classList.remove('active');
             document.getElementById('loginScreen').classList.add('active');
-            document.getElementById('loginForm').reset();
         });
 
         // =============================================
@@ -871,162 +1015,99 @@
                 item.classList.add('active');
                 if (page === 'dashboard') loadDashboard();
                 if (page === 'clientes') loadClientes();
-                if (page === 'cobrancas') { loadCobrancas(); document.getElementById('searchCobranca').value = ''; currentCobrancaFilter = ''; }
-                if (page === 'pagamentos') { loadPagamentos(); document.getElementById('searchPagamento').value = ''; currentPagamentoFilter = ''; }
+                if (page === 'cobrancas') { loadCobrancas(); document.getElementById('searchCobranca').value = ''; }
+                if (page === 'pagamentos') { loadPagamentos(); document.getElementById('searchPagamento').value = ''; }
                 if (page === 'usuarios') loadUsuarios();
                 if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('active');
             });
         });
-
         document.getElementById('menuToggle').addEventListener('click', () => { document.getElementById('sidebar').classList.toggle('active'); });
 
         // =============================================
-        // CARREGAR DADOS DO SUPABASE
+        // CARREGAR DADOS
         // =============================================
         async function carregarDados() {
-            console.log('🔄 Carregando dados...');
             try {
-                const [clientesRes, cobrancasRes, pagamentosRes, usuariosRes] = await Promise.all([
-                    supabaseClient.from('clientes').select('*').order('id'),
-                    supabaseClient.from('cobrancas').select('*'),
-                    supabaseClient.from('pagamentos').select('*'),
-                    supabaseClient.from('usuarios').select('*')
-                ]);
-                if (!clientesRes.error) { clients = clientesRes.data; localStorage.setItem('prevenir_clients', JSON.stringify(clients)); }
-                if (!cobrancasRes.error) { charges = cobrancasRes.data; localStorage.setItem('prevenir_charges', JSON.stringify(charges)); }
-                if (!pagamentosRes.error) { payments = pagamentosRes.data; localStorage.setItem('prevenir_payments', JSON.stringify(payments)); }
-                if (!usuariosRes.error) { users = usuariosRes.data; localStorage.setItem('prevenir_users', JSON.stringify(users)); }
+                const [cRes, chRes, pRes, uRes] = await Promise.all([supabaseClient.from('clientes').select('*'), supabaseClient.from('cobrancas').select('*'), supabaseClient.from('pagamentos').select('*'), supabaseClient.from('usuarios').select('*')]);
+                if (!cRes.error) { clients = cRes.data; localStorage.setItem('prevenir_clients', JSON.stringify(clients)); }
+                if (!chRes.error) { charges = chRes.data; localStorage.setItem('prevenir_charges', JSON.stringify(charges)); }
+                if (!pRes.error) { payments = pRes.data; localStorage.setItem('prevenir_payments', JSON.stringify(payments)); }
+                if (!uRes.error) { users = uRes.data; localStorage.setItem('prevenir_users', JSON.stringify(users)); }
                 atualizarCobrancasAtrasadas();
                 loadDashboard(); loadClientes(); loadCobrancas(); loadPagamentos(); loadUsuarios();
-            } catch (error) { console.error('Erro ao carregar:', error); }
+            } catch (error) { console.error(error); }
         }
-        
-        function atualizarCobrancasAtrasadas() {
-            const hoje = new Date();
-            let atualizado = false;
-            charges.forEach(charge => {
-                if (charge.status !== 'paid' && new Date(charge.vencimento) < hoje) { charge.status = 'overdue'; atualizado = true; }
-            });
-            if (atualizado) localStorage.setItem('prevenir_charges', JSON.stringify(charges));
-        }
-        
+        function atualizarCobrancasAtrasadas() { const hoje = new Date(); let att = false; charges.forEach(c => { if (c.status !== 'paid' && new Date(c.vencimento) < hoje) { c.status = 'overdue'; att = true; } }); if (att) localStorage.setItem('prevenir_charges', JSON.stringify(charges)); }
+
         // =============================================
-        // LOAD DASHBOARD
+        // LOADS
         // =============================================
         function loadDashboard() {
-            const totalClients = clients.length;
-            const pendingCharges = charges.filter(c => c.status !== 'paid').length;
-            const paidCharges = charges.filter(c => c.status === 'paid').length;
-            const overdueCharges = charges.filter(c => c.status === 'overdue').length;
-            const totalToReceive = charges.filter(c => c.status !== 'paid').reduce((sum, c) => sum + c.valor, 0);
-            const receivedThisMonth = payments.filter(p => { const d = new Date(p.data_pagamento); const now = new Date(); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).reduce((sum, p) => sum + p.valor_recebido, 0);
-            document.getElementById('statsGrid').innerHTML = `
-                <div class="stat-card"><h3>Total Clientes</h3><div class="value">${totalClients}</div></div>
-                <div class="stat-card"><h3>Cobranças Pendentes</h3><div class="value">${pendingCharges}</div></div>
-                <div class="stat-card"><h3>Cobranças Pagas</h3><div class="value">${paidCharges}</div></div>
-                <div class="stat-card"><h3>Cobranças Atrasadas</h3><div class="value">${overdueCharges}</div></div>
-                <div class="stat-card"><h3>Total a Receber</h3><div class="value">R$ ${totalToReceive.toFixed(2)}</div></div>
-                <div class="stat-card"><h3>Recebido no Mês</h3><div class="value">R$ ${receivedThisMonth.toFixed(2)}</div></div>
-            `;
-            document.getElementById('resumoFinanceiro').innerHTML = `
-                <tr><td>Total de Clientes</td><td>${totalClients}</td></tr>
-                <tr><td>Valor Total Pendente</td><td>R$ ${totalToReceive.toFixed(2)}</td></tr>
-                <tr><td>Valor Recebido no Mês</td><td>R$ ${receivedThisMonth.toFixed(2)}</td></tr>
-            `;
+            const total = clients.length, pendentes = charges.filter(c => c.status !== 'paid').length, pagas = charges.filter(c => c.status === 'paid').length, atrasadas = charges.filter(c => c.status === 'overdue').length;
+            const aReceber = charges.filter(c => c.status !== 'paid').reduce((s, c) => s + c.valor, 0);
+            const recebidoMes = payments.filter(p => { const d = new Date(p.data_pagamento); const n = new Date(); return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear(); }).reduce((s, p) => s + p.valor_recebido, 0);
+            document.getElementById('statsGrid').innerHTML = `<div class="stat-card"><h3>Total Clientes</h3><div class="value">${total}</div></div><div class="stat-card"><h3>Cobranças Pendentes</h3><div class="value">${pendentes}</div></div><div class="stat-card"><h3>Cobranças Pagas</h3><div class="value">${pagas}</div></div><div class="stat-card"><h3>Cobranças Atrasadas</h3><div class="value">${atrasadas}</div></div><div class="stat-card"><h3>Total a Receber</h3><div class="value">R$ ${aReceber.toFixed(2)}</div></div><div class="stat-card"><h3>Recebido no Mês</h3><div class="value">R$ ${recebidoMes.toFixed(2)}</div></div>`;
+            document.getElementById('resumoFinanceiro').innerHTML = `<tr><td>Total de Clientes</td><td>${total}</td></tr><tr><td>Valor Total Pendente</td><td>R$ ${aReceber.toFixed(2)}</td></tr><tr><td>Recebido neste Mês</td><td>R$ ${recebidoMes.toFixed(2)}</td></tr>`;
         }
-        
-        // =============================================
-        // LOAD CLIENTES
-        // =============================================
         function loadClientes() {
             const tbody = document.getElementById('clientesList');
-            tbody.innerHTML = clients.map(client => {
-                const situacao = charges.filter(c => c.cliente_id === client.id && c.status !== 'paid').length > 0 ? '⚠️ Devedor' : '✅ Regular';
-                return `<tr>
-                    <td><strong>${client.nome}</strong><br><small>${client.cpf || '-'}</small></td>
-                    <td>${client.telefone || '-'}</td>
-                    <td>${client.endereco || '-'} ${client.bairro || ''} ${client.cidade || ''}</td>
-                    <td>${situacao}</td>
-                    <td>
-                        <button class="btn-icon btn-view" onclick="verDetalhesCliente(${client.id})"><i class="fas fa-eye"></i></button>
-                        <button class="btn-icon btn-edit" onclick="editClient(${client.id})"><i class="fas fa-edit"></i></button>
-                        ${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${client.id})"><i class="fas fa-trash"></i></button>` : ''}
-                        ${client.latitude ? `<button class="btn-icon btn-map" onclick="window.open('https://www.google.com/maps?q=${client.latitude},${client.longitude}', '_blank')"><i class="fas fa-map-marker-alt"></i></button>` : ''}
-                    </td
-                </tr>`;
+            tbody.innerHTML = clients.map(c => {
+                const devedor = charges.filter(ch => ch.cliente_id === c.id && ch.status !== 'paid').length > 0;
+                return `<tr><td><strong>${c.nome}</strong><br><small>${c.cpf || '-'}</small></td><td>${c.telefone || '-'}</td><td>${c.endereco || '-'} ${c.bairro || ''}</td><td>${devedor ? '<span class="badge badge-overdue">Devedor</span>' : '<span class="badge badge-paid">Regular</span>'}</td><td><button class="btn-icon btn-view" onclick="verDetalhesCliente(${c.id})"><i class="fas fa-eye"></i></button><button class="btn-icon btn-edit" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${c.id})"><i class="fas fa-trash"></i></button>` : ''}${c.latitude ? `<button class="btn-icon btn-map" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')"><i class="fas fa-map-marker-alt"></i></button>` : ''}</td></tr>`;
             }).join('');
         }
-        
         function verDetalhesCliente(id) {
-            const client = clients.find(c => c.id === id);
-            const cobrancasCliente = charges.filter(c => c.cliente_id === id);
-            const pagamentosCliente = payments.filter(p => { const c = charges.find(c => c.id === p.cobranca_id); return c && c.cliente_id === id; });
-            document.getElementById('detalhesCliente').innerHTML = `
-                <p><strong>Nome:</strong> ${client.nome}</p>
-                <p><strong>CPF:</strong> ${client.cpf || '-'}</p>
-                <p><strong>Telefone:</strong> ${client.telefone || '-'}</p>
-                <p><strong>Endereço:</strong> ${client.endereco || '-'} ${client.bairro || ''} ${client.cidade || ''} ${client.estado || ''}</p>
-                <p><strong>Observações:</strong> ${client.observacoes || '-'}</p>
-                ${client.latitude ? `<p><strong>Localização:</strong> <button onclick="window.open('https://www.google.com/maps?q=${client.latitude},${client.longitude}', '_blank')">Abrir no Mapa</button></p>` : ''}
-                ${client.foto_url ? `<p><strong>Foto:</strong> <br><img src="${client.foto_url}" style="max-width: 100%; border-radius: 12px;"></p>` : ''}
-            `;
-            document.getElementById('detalhesCobrancas').innerHTML = cobrancasCliente.length ? `<table style="width:100%"><tr><th>Valor</th><th>Vencimento</th><th>Status</th></tr>${cobrancasCliente.map(c => `<tr><td>R$ ${c.valor}</td><td>${new Date(c.vencimento).toLocaleDateString()}</td><td>${c.status === 'paid' ? 'Pago' : (c.status === 'overdue' ? 'Atrasado' : 'Pendente')}</td></tr>`).join('')}</table>` : 'Nenhuma cobrança';
-            document.getElementById('detalhesPagamentos').innerHTML = pagamentosCliente.length ? `<table style="width:100%"><tr><th>Valor</th><th>Forma</th><th>Data</th></tr>${pagamentosCliente.map(p => `<tr><td>R$ ${p.valor_recebido}</td><td>${p.forma_pagamento}</td><td>${new Date(p.data_pagamento).toLocaleString()}</td></tr>`).join('')}</table>` : 'Nenhum pagamento';
-            document.getElementById('detalhesObservacoes').innerHTML = client.observacoes || 'Nenhuma observação';
+            const c = clients.find(c => c.id === id);
+            const cobCliente = charges.filter(ch => ch.cliente_id === id);
+            const pagCliente = payments.filter(p => { const ch = charges.find(c => c.id === p.cobranca_id); return ch && ch.cliente_id === id; });
+            document.getElementById('detalhesCliente').innerHTML = `<p><strong>Nome:</strong> ${c.nome}</p><p><strong>CPF:</strong> ${c.cpf || '-'}</p><p><strong>Telefone:</strong> ${c.telefone || '-'}</p><p><strong>Endereço:</strong> ${c.endereco || '-'} ${c.bairro || ''} ${c.cidade || ''} ${c.estado || ''}</p><p><strong>Observações:</strong> ${c.observacoes || '-'}</p>${c.latitude ? `<p><strong>Localização:</strong> <button class="btn-secondary" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')">Abrir Mapa</button></p>` : ''}${c.foto_url ? `<p><strong>Foto:</strong><br><img src="${c.foto_url}" style="max-width:100%;border-radius:12px;"></p>` : ''}`;
+            document.getElementById('detalhesCobrancas').innerHTML = cobCliente.length ? `<table style="width:100%"><tr><th>Valor</th><th>Vencimento</th><th>Status</th></tr>${cobCliente.map(ch => `<tr><td>R$ ${ch.valor}</td><td>${new Date(ch.vencimento).toLocaleDateString()}</td><td>${ch.status === 'paid' ? 'Pago' : (ch.status === 'overdue' ? 'Atrasado' : 'Pendente')}</td></tr>`).join('')}</table>` : 'Nenhuma cobrança';
+            document.getElementById('detalhesPagamentos').innerHTML = pagCliente.length ? `<table style="width:100%"><tr><th>Valor</th><th>Forma</th><th>Data</th></tr>${pagCliente.map(p => `<tr><td>R$ ${p.valor_recebido}</td><td>${p.forma_pagamento}</td><td>${new Date(p.data_pagamento).toLocaleString()}</td></tr>`).join('')}</table>` : 'Nenhum pagamento';
+            document.getElementById('detalhesObservacoes').innerHTML = c.observacoes || 'Nenhuma observação';
             document.getElementById('detalhesModal').classList.add('active');
         }
-        
         function loadCobrancas() { renderCobrancasList(charges); }
         function loadPagamentos() { renderPagamentosList(payments); }
-        
         function loadUsuarios() {
             if (currentUser?.perfil !== 'admin') return;
             const tbody = document.getElementById('usuariosList');
-            tbody.innerHTML = users.map(user => `<tr>
-                <td>${user.username}</td
-                <td>${user.nome}</td
-                <td>${user.perfil === 'admin' ? 'Admin' : 'Colaborador'}</td
-                <td>${user.ativo ? 'Ativo' : 'Inativo'}</td
-                <td><button class="btn-icon btn-edit" onclick="editUser(${user.id})"><i class="fas fa-edit"></i></button>${user.id !== 1 ? `<button class="btn-icon btn-delete" onclick="deleteUser(${user.id})"><i class="fas fa-trash"></i></button>` : ''}</td
-            </tr>`).join('');
+            tbody.innerHTML = users.map(u => `<tr><td>${u.username}</td><td>${u.nome}</td><td>${u.perfil === 'admin' ? 'Admin' : 'Colaborador'}</td><td>${u.ativo ? 'Ativo' : 'Inativo'}</td><td><button class="btn-icon btn-edit" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button>${u.id !== 1 ? `<button class="btn-icon btn-delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i></button>` : ''}</td></tr>`).join('');
         }
-        
+
         // =============================================
         // CRUD CLIENTES
         // =============================================
         function editClient(id) {
-            const client = clients.find(c => c.id === id);
-            if (client) {
+            const c = clients.find(c => c.id === id);
+            if (c) {
                 document.getElementById('clientModalTitle').textContent = 'Editar Cliente';
-                document.getElementById('clientId').value = client.id;
-                document.getElementById('clientNome').value = client.nome;
-                document.getElementById('clientCpf').value = client.cpf || '';
-                document.getElementById('clientTelefone').value = client.telefone || '';
-                document.getElementById('clientEndereco').value = client.endereco || '';
-                document.getElementById('clientBairro').value = client.bairro || '';
-                document.getElementById('clientCidade').value = client.cidade || '';
-                document.getElementById('clientEstado').value = client.estado || '';
-                document.getElementById('clientObservacoes').value = client.observacoes || '';
-                document.getElementById('clientLatitude').value = client.latitude || '';
-                document.getElementById('clientLongitude').value = client.longitude || '';
-                if (client.foto_url) { document.getElementById('fotoPreview').innerHTML = `<img src="${client.foto_url}" class="foto-preview">`; document.getElementById('clientFotoUrl').value = client.foto_url; }
-                if (client.latitude) document.getElementById('locationInfo').innerHTML = `📍 Local: ${client.latitude}, ${client.longitude}`;
+                document.getElementById('clientId').value = c.id;
+                document.getElementById('clientNome').value = c.nome;
+                document.getElementById('clientCpf').value = c.cpf || '';
+                document.getElementById('clientTelefone').value = c.telefone || '';
+                document.getElementById('clientEndereco').value = c.endereco || '';
+                document.getElementById('clientBairro').value = c.bairro || '';
+                document.getElementById('clientCidade').value = c.cidade || '';
+                document.getElementById('clientEstado').value = c.estado || '';
+                document.getElementById('clientObservacoes').value = c.observacoes || '';
+                document.getElementById('clientLatitude').value = c.latitude || '';
+                document.getElementById('clientLongitude').value = c.longitude || '';
+                if (c.latitude) document.getElementById('locationInfo').innerHTML = `📍 Local: ${c.latitude}, ${c.longitude}`;
+                if (c.foto_url) { document.getElementById('fotoPreview').innerHTML = `<img src="${c.foto_url}" class="foto-preview">`; document.getElementById('clientFotoUrl').value = c.foto_url; }
                 document.getElementById('clientModal').classList.add('active');
             }
         }
-        
         async function deleteClient(id) {
-            if (confirm('Tem certeza que deseja excluir este cliente?')) {
+            if (confirm('Tem certeza?')) {
                 const { error } = await supabaseClient.from('clientes').delete().eq('id', id);
                 if (!error) { clients = clients.filter(c => c.id !== id); localStorage.setItem('prevenir_clients', JSON.stringify(clients)); loadClientes(); loadDashboard(); }
-                else { alert('Erro ao excluir: ' + error.message); }
+                else alert('Erro ao excluir');
             }
         }
-        
         document.getElementById('clientForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('clientId').value;
-            const clientData = {
+            const data = {
                 nome: document.getElementById('clientNome').value,
                 cpf: document.getElementById('clientCpf').value,
                 telefone: document.getElementById('clientTelefone').value,
@@ -1040,12 +1121,11 @@
                 foto_url: document.getElementById('clientFotoUrl').value
             };
             let result;
-            if (id) { result = await supabaseClient.from('clientes').update(clientData).eq('id', id); if (!result.error) { const idx = clients.findIndex(c => c.id === parseInt(id)); if (idx !== -1) clients[idx] = { ...clients[idx], ...clientData }; } }
-            else { clientData.id = Date.now(); result = await supabaseClient.from('clientes').insert([clientData]); if (!result.error) { clients.push(clientData); addToPendingSync('client', clientData); } }
+            if (id) { result = await supabaseClient.from('clientes').update(data).eq('id', id); if (!result.error) { const idx = clients.findIndex(c => c.id === parseInt(id)); if (idx !== -1) clients[idx] = { ...clients[idx], ...data }; } }
+            else { data.id = Date.now(); result = await supabaseClient.from('clientes').insert([data]); if (!result.error) { clients.push(data); addToPendingSync('client', data); } }
             if (!result.error) { localStorage.setItem('prevenir_clients', JSON.stringify(clients)); closeModal('clientModal'); loadClientes(); loadDashboard(); }
-            else { alert('Erro: ' + result.error.message); }
+            else alert('Erro ao salvar');
         });
-        
         function openClientModal() {
             document.getElementById('clientModalTitle').textContent = 'Novo Cliente';
             document.getElementById('clientForm').reset();
@@ -1054,7 +1134,7 @@
             document.getElementById('fotoPreview').innerHTML = '';
             document.getElementById('clientModal').classList.add('active');
         }
-        
+
         // =============================================
         // CRUD COBRANÇAS
         // =============================================
@@ -1064,10 +1144,9 @@
             document.getElementById('cobrancaForm').reset();
             document.getElementById('cobrancaModal').classList.add('active');
         }
-        
         document.getElementById('cobrancaForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const chargeData = {
+            const data = {
                 id: Date.now(),
                 cliente_id: parseInt(document.getElementById('cobrancaCliente').value),
                 valor: parseFloat(document.getElementById('cobrancaValor').value),
@@ -1075,11 +1154,11 @@
                 status: 'pending',
                 observacoes: document.getElementById('cobrancaObs').value
             };
-            const { error } = await supabaseClient.from('cobrancas').insert([chargeData]);
-            if (!error) { charges.push(chargeData); localStorage.setItem('prevenir_charges', JSON.stringify(charges)); addToPendingSync('charge', chargeData); closeModal('cobrancaModal'); loadCobrancas(); loadDashboard(); }
-            else { alert('Erro: ' + error.message); }
+            const { error } = await supabaseClient.from('cobrancas').insert([data]);
+            if (!error) { charges.push(data); localStorage.setItem('prevenir_charges', JSON.stringify(charges)); addToPendingSync('charge', data); closeModal('cobrancaModal'); loadCobrancas(); loadDashboard(); }
+            else alert('Erro ao salvar');
         });
-        
+
         // =============================================
         // PAGAMENTOS
         // =============================================
@@ -1090,11 +1169,10 @@
             document.getElementById('pagamentoForm').reset();
             document.getElementById('pagamentoModal').classList.add('active');
         }
-        
         document.getElementById('pagamentoForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const cobrancaId = parseInt(document.getElementById('pagamentoCobrancaId').value);
-            const paymentData = {
+            const data = {
                 id: Date.now(),
                 cobranca_id: cobrancaId,
                 valor_recebido: parseFloat(document.getElementById('pagamentoValor').value),
@@ -1103,69 +1181,59 @@
                 usuario_id: currentUser.id,
                 data_pagamento: new Date().toISOString()
             };
-            const { error: payError } = await supabaseClient.from('pagamentos').insert([paymentData]);
-            if (!payError) {
-                const { error: upError } = await supabaseClient.from('cobrancas').update({ status: 'paid' }).eq('id', cobrancaId);
-                if (!upError) {
-                    payments.push(paymentData);
-                    const idx = charges.findIndex(c => c.id === cobrancaId);
-                    if (idx !== -1) charges[idx].status = 'paid';
-                    localStorage.setItem('prevenir_payments', JSON.stringify(payments));
-                    localStorage.setItem('prevenir_charges', JSON.stringify(charges));
-                    addToPendingSync('payment', paymentData);
-                    closeModal('pagamentoModal');
-                    loadCobrancas();
-                    loadPagamentos();
-                    loadDashboard();
-                }
-            } else { alert('Erro: ' + payError.message); }
+            const { error: pError } = await supabaseClient.from('pagamentos').insert([data]);
+            if (!pError) {
+                await supabaseClient.from('cobrancas').update({ status: 'paid' }).eq('id', cobrancaId);
+                payments.push(data);
+                const idx = charges.findIndex(c => c.id === cobrancaId);
+                if (idx !== -1) charges[idx].status = 'paid';
+                localStorage.setItem('prevenir_payments', JSON.stringify(payments));
+                localStorage.setItem('prevenir_charges', JSON.stringify(charges));
+                addToPendingSync('payment', data);
+                closeModal('pagamentoModal');
+                loadCobrancas(); loadPagamentos(); loadDashboard();
+            } else alert('Erro ao registrar pagamento');
         });
-        
+
         // =============================================
         // CRUD USUÁRIOS
         // =============================================
         function openUserModal() { if (currentUser?.perfil !== 'admin') return; document.getElementById('userForm').reset(); document.getElementById('userId').value = ''; document.getElementById('userModal').classList.add('active'); }
-        function editUser(id) { const user = users.find(u => u.id === id); if (user) { document.getElementById('userId').value = user.id; document.getElementById('userUsername').value = user.username; document.getElementById('userNome').value = user.nome; document.getElementById('userPerfil').value = user.perfil; document.getElementById('userStatus').value = user.ativo ? 'true' : 'false'; document.getElementById('userModal').classList.add('active'); } }
+        function editUser(id) { const u = users.find(u => u.id === id); if (u) { document.getElementById('userId').value = u.id; document.getElementById('userUsername').value = u.username; document.getElementById('userNome').value = u.nome; document.getElementById('userPerfil').value = u.perfil; document.getElementById('userStatus').value = u.ativo ? 'true' : 'false'; document.getElementById('userModal').classList.add('active'); } }
         async function deleteUser(id) { if (confirm('Tem certeza?')) { const { error } = await supabaseClient.from('usuarios').delete().eq('id', id); if (!error) { users = users.filter(u => u.id !== id); localStorage.setItem('prevenir_users', JSON.stringify(users)); loadUsuarios(); } } }
-        
         document.getElementById('userForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('userId').value;
-            const userData = { id: id ? parseInt(id) : Date.now(), username: document.getElementById('userUsername').value, senha_hash: document.getElementById('userPassword').value || '123456', nome: document.getElementById('userNome').value, perfil: document.getElementById('userPerfil').value, ativo: document.getElementById('userStatus').value === 'true' };
+            const data = {
+                id: id ? parseInt(id) : Date.now(),
+                username: document.getElementById('userUsername').value,
+                senha_hash: document.getElementById('userPassword').value || '123456',
+                nome: document.getElementById('userNome').value,
+                perfil: document.getElementById('userPerfil').value,
+                ativo: document.getElementById('userStatus').value === 'true'
+            };
             let result;
-            if (id) { result = await supabaseClient.from('usuarios').update(userData).eq('id', id); if (!result.error) { const idx = users.findIndex(u => u.id === parseInt(id)); if (idx !== -1) users[idx] = userData; } }
-            else { result = await supabaseClient.from('usuarios').insert([userData]); if (!result.error) { users.push(userData); addToPendingSync('user', userData); } }
+            if (id) { result = await supabaseClient.from('usuarios').update(data).eq('id', id); if (!result.error) { const idx = users.findIndex(u => u.id === parseInt(id)); if (idx !== -1) users[idx] = data; } }
+            else { result = await supabaseClient.from('usuarios').insert([data]); if (!result.error) { users.push(data); addToPendingSync('user', data); } }
             if (!result.error) { localStorage.setItem('prevenir_users', JSON.stringify(users)); closeModal('userModal'); loadUsuarios(); }
-            else { alert('Erro: ' + result.error.message); }
+            else alert('Erro ao salvar');
         });
-        
-        // =============================================
-        // FILTROS E UTILIDADES
-        // =============================================
+
         function filterClients() {
             const search = document.getElementById('searchClient').value.toLowerCase();
             const filtered = clients.filter(c => c.nome.toLowerCase().includes(search) || (c.cpf && c.cpf.includes(search)) || (c.telefone && c.telefone.includes(search)));
             const tbody = document.getElementById('clientesList');
-            tbody.innerHTML = filtered.map(client => {
-                const situacao = charges.filter(c => c.cliente_id === client.id && c.status !== 'paid').length > 0 ? '⚠️ Devedor' : '✅ Regular';
-                return `<tr>
-                    <td><strong>${client.nome}</strong><br><small>${client.cpf || '-'}</small></td>
-                    <td>${client.telefone || '-'}</td
-                    <td>${client.endereco || '-'} ${client.bairro || ''} ${client.cidade || ''}</td
-                    <td>${situacao}</td
-                    <td><button class="btn-icon btn-view" onclick="verDetalhesCliente(${client.id})"><i class="fas fa-eye"></i></button><button class="btn-icon btn-edit" onclick="editClient(${client.id})"><i class="fas fa-edit"></i></button>${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${client.id})"><i class="fas fa-trash"></i></button>` : ''}${client.latitude ? `<button class="btn-icon btn-map" onclick="window.open('https://www.google.com/maps?q=${client.latitude},${client.longitude}', '_blank')"><i class="fas fa-map-marker-alt"></i></button>` : ''}</td
-                </tr>`;
+            tbody.innerHTML = filtered.map(c => {
+                const devedor = charges.filter(ch => ch.cliente_id === c.id && ch.status !== 'paid').length > 0;
+                return `<tr><td><strong>${c.nome}</strong><br><small>${c.cpf || '-'}</small></td><td>${c.telefone || '-'}</td><td>${c.endereco || '-'} ${c.bairro || ''}</td><td>${devedor ? '<span class="badge badge-overdue">Devedor</span>' : '<span class="badge badge-paid">Regular</span>'}</td><td><button class="btn-icon btn-view" onclick="verDetalhesCliente(${c.id})"><i class="fas fa-eye"></i></button><button class="btn-icon btn-edit" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${c.id})"><i class="fas fa-trash"></i></button>` : ''}${c.latitude ? `<button class="btn-icon btn-map" onclick="window.open('https://www.google.com/maps?q=${c.latitude},${c.longitude}','_blank')"><i class="fas fa-map-marker-alt"></i></button>` : ''}</td></tr>`;
             }).join('');
         }
-        
+
         function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
-        
-        // =============================================
-        // VERIFICAR SESSÃO SALVA
-        // =============================================
-        const savedUser = localStorage.getItem('prevenir_currentUser');
-        if (savedUser) {
-            currentUser = JSON.parse(savedUser);
+
+        const saved = localStorage.getItem('prevenir_currentUser');
+        if (saved) {
+            currentUser = JSON.parse(saved);
             document.getElementById('loginScreen').classList.remove('active');
             document.getElementById('dashboardScreen').classList.add('active');
             if (currentUser.perfil !== 'admin') document.getElementById('usuariosNav').style.display = 'none';
@@ -1173,11 +1241,6 @@
             setTimeout(manterBancoVivo, 60000);
             setInterval(manterBancoVivo, 23 * 60 * 60 * 1000);
         }
-        
-        console.log('🚀 Sistema Prevenir COMPLETO - Branco e Dourado');
-        console.log('📱 Funcionalidades: Dashboard, Clientes (com foto/GPS), Cobranças, Pagamentos, Usuários');
-        console.log('🔄 Sincronização automática ativada');
-        console.log('💾 Keep-Alive ativado (a cada 23 horas)');
     </script>
 </body>
 </html>
