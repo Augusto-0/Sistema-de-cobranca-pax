@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#D4AF37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Prevenir - Gestão de Clientes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Login Screen */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a00 50%, #2a2a00 100%);
+        }
+
+        .login-card {
+            background: #0a0a0a;
+            border-radius: 28px;
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(212,175,55,0.2);
+            animation: slideUp 0.5s ease;
+            border: 1px solid #D4AF37;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(212,175,55,0.3);
+        }
+
+        .logo-text {
+            font-size: 42px;
+            font-weight: 800;
+            color: #000000;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .login-header h1 {
+            font-size: 24px;
+            color: #D4AF37;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: #888888;
+            font-size: 13px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #D4AF37;
+            font-size: 18px;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #333333;
+            border-radius: 14px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .input-group textarea {
+            padding: 14px 16px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+        }
+
+        .input-group input::placeholder,
+        .input-group textarea::placeholder {
+            color: #666666;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
+            color: #000000;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 8px;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .error-message {
+            background: #330000;
+            color: #FF4444;
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 13px;
+            border: 1px solid #FF4444;
+        }
+
+        /* Dashboard Mobile */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #0a0a0a;
+            box-shadow: 2px 0 20px rgba(212,175,55,0.1);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            transform: translateX(-100%);
+            border-right: 1px solid #D4AF37;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            text-align: center;
+            border-bottom: 1px solid #D4AF37;
+            background: linear-gradient(135deg, #000000 0%, #1a1a00 100%);
+        }
+
+        .sidebar-logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+        }
+
+        .sidebar-logo span {
+            font-size: 28px;
+            font-weight: 800;
+            color: #000000;
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            color: #D4AF37;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: #888888;
+        }
+
+        .sidebar-nav {
+            padding: 16px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            color: #cccccc;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .nav-item:active {
+            background: #1a1a1a;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, #D4AF3715 0%, #FFD70015 100%);
+            color: #D4AF37;
+            border-right: 3px solid #D4AF37;
+        }
+
+        .nav-item i {
+            width: 28px;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 0;
+            padding: 16px;
+            padding-top: 70px;
+            padding-bottom: 80px;
+            background: #000000;
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 1001;
+            background: #0a0a0a;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(212,175,55,0.2);
+            transition: all 0.2s;
+            border: 1px solid #D4AF37;
+        }
+
+        .menu-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .menu-toggle i {
+            font-size: 20px;
+            color: #D4AF37;
+        }
+
+        /* Fullscreen Button */
+        .fullscreen-btn {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 1001;
+            background: #0a0a0a;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(212,175,55,0.2);
+            transition: all 0.2s;
+            border: 1px solid #D4AF37;
+        }
+
+        .fullscreen-btn:active {
+            transform: scale(0.95);
+        }
+
+        .fullscreen-btn i {
+            font-size: 20px;
+            color: #D4AF37;
+        }
+
+        /* Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #0a0a0a;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(212,175,55,0.1);
+            transition: transform 0.2s;
+            border: 1px solid #D4AF37;
+        }
+
+        .stat-card:active {
+            transform: scale(0.98);
+        }
+
+        .stat-card h3 {
+            color: #D4AF37;
+            font-size: 12px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        /* Tables */
+        .data-table {
+            background: #0a0a0a;
+            border-radius: 16px;
+            overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(212,175,55,0.1);
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid #333333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #333333;
+            font-size: 13px;
+            color: #cccccc;
+        }
+
+        th {
+            background: #1a1a1a;
+            font-weight: 600;
+            color: #D4AF37;
+            font-size: 12px;
+        }
+
+        .btn-icon {
+            padding: 8px 12px;
+            margin: 0 2px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+
+        .btn-icon:active {
+            transform: scale(0.95);
+        }
+
+        .btn-edit {
+            background: #D4AF37;
+            color: #000000;
+        }
+
+        .btn-delete {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-view {
+            background: #10b981;
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #0a0a0a;
+            border-radius: 24px 24px 0 0;
+            padding: 24px 20px 32px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUpModal 0.3s ease;
+            border-top: 2px solid #D4AF37;
+        }
+
+        @keyframes slideUpModal {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #D4AF37;
+        }
+
+        /* Search Box */
+        .search-box {
+            margin-bottom: 16px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #333333;
+            border-radius: 14px;
+            font-size: 15px;
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .search-box input::placeholder {
+            color: #666666;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-pending { background: #664d00; color: #D4AF37; }
+        .badge-paid { background: #006644; color: #00ff88; }
+        .badge-overdue { background: #660000; color: #ff4444; }
+
+        .btn-secondary {
+            background: #333333;
+            color: #ffffff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.98);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .page-header h1 {
+            font-size: 22px;
+            color: #D4AF37;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Sync Indicator */
+        .sync-indicator {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            z-index: 999;
+            transition: all 0.3s;
+            opacity: 0.5;
+        }
+
+        .sync-indicator.syncing {
+            background: #D4AF37;
+            animation: pulse 1s infinite;
+        }
+
+        .sync-indicator.offline {
+            background: #f59e0b;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.5; transform: scale(1); }
+        }
+
+        @media (min-width: 768px) {
+            .menu-toggle {
+                display: none;
+            }
+            
+            .sidebar {
+                transform: translateX(0);
+                width: 260px;
+            }
+            
+            .main-content {
+                margin-left: 260px;
+                padding: 24px;
+                padding-top: 24px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 20px;
+            }
+            
+            .stat-card .value {
+                font-size: 28px;
+            }
+            
+            .modal-content {
+                border-radius: 24px;
+                margin: 20px;
+                max-height: 85vh;
+            }
+            
+            .modal {
+                align-items: center;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <div class="fullscreen-btn" id="fullscreenBtn">
+            <i class="fas fa-expand"></i>
+        </div>
+
+        <div class="sync-indicator" id="syncIndicator"></div>
+
+        <div id="loginScreen" class="screen active">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-header">
+                        <div class="logo-container">
+                            <div class="logo-text">PR</div>
+                        </div>
+                        <h1>Prevenir</h1>
+                        <p>Sistema de Gestão - Plano Funeral</p>
+                    </div>
+                    <form id="loginForm">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="username" placeholder="Usuário" required autocomplete="off">
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" placeholder="Senha" required>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Entrar
+                        </button>
+                    </form>
+                    <div id="loginError" class="error-message" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboardScreen" class="screen">
+            <div class="app-container">
+                <aside class="sidebar" id="sidebar">
+                    <div class="sidebar-header">
+                        <div class="sidebar-logo">
+                            <span>PR</span>
+                        </div>
+                        <h2>Prevenir</h2>
+                        <p>Plano Funeral</p>
+                    </div>
+                    <nav class="sidebar-nav">
+                        <a href="#" data-page="dashboard" class="nav-item active">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="#" data-page="clientes" class="nav-item">
+                            <i class="fas fa-users"></i>
+                            <span>Clientes</span>
+                        </a>
+                        <a href="#" data-page="cobrancas" class="nav-item">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <span>Cobranças</span>
+                        </a>
+                        <a href="#" data-page="pagamentos" class="nav-item">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Pagamentos</span>
+                        </a>
+                        <a href="#" id="usuariosNav" data-page="usuarios" class="nav-item">
+                            <i class="fas fa-users-cog"></i>
+                            <span>Usuários</span>
+                        </a>
+                        <a href="#" id="logoutBtn" class="nav-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Sair</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <main class="main-content">
+                    <div id="dashboardPage" class="page active">
+                        <div class="page-header">
+                            <h1>Dashboard</h1>
+                        </div>
+                        <div class="stats-grid" id="statsGrid"></div>
+                    </div>
+
+                    <div id="clientesPage" class="page">
+                        <div class="page-header">
+                            <h1>Clientes</h1>
+                            <button class="btn-primary" onclick="openClientModal()" style="width: auto; padding: 12px 20px;">
+                                <i class="fas fa-plus"></i> Novo
+                            </button>
+                        </div>
+                        <div class="search-box">
+                            <input type="text" id="searchClient" placeholder="🔍 Pesquisar por nome, CPF ou telefone..." onkeyup="filterClients()">
+                        </div>
+                        <div class="data-table">
+                            <table id="clientesTable">
+                                <thead><tr><th>Nome</th><th>CPF</th><th>Telefone</th><th>Ações</th></tr></thead>
+                                <tbody id="clientesList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="cobrancasPage" class="page">
+                        <div class="page-header">
+                            <h1>Cobranças</h1>
+                            <button class="btn-primary" onclick="openCobrancaModal()" style="width: auto; padding: 12px 20px;">
+                                <i class="fas fa-plus"></i> Nova
+                            </button>
+                        </div>
+                        <div class="search-box">
+                            <input type="text" id="searchCobranca" placeholder="🔍 Pesquisar por nome do cliente..." onkeyup="filterCobrancas()">
+                        </div>
+                        <div class="data-table">
+                            <table id="cobrancasTable">
+                                <thead><tr><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr></thead>
+                                <tbody id="cobrancasList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="pagamentosPage" class="page">
+                        <div class="page-header">
+                            <h1>Pagamentos</h1>
+                        </div>
+                        <div class="search-box">
+                            <input type="text" id="searchPagamento" placeholder="🔍 Pesquisar por nome do cliente..." onkeyup="filterPagamentos()">
+                        </div>
+                        <div class="data-table">
+                            <table id="pagamentosTable">
+                                <thead><tr><th>Cliente</th><th>Valor</th><th>Forma</th><th>Data/Hora</th><th>Usuário</th></tr></thead>
+                                <tbody id="pagamentosList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="usuariosPage" class="page">
+                        <div class="page-header">
+                            <h1>Usuários</h1>
+                            <button class="btn-primary" onclick="openUserModal()" style="width: auto; padding: 12px 20px;">
+                                <i class="fas fa-plus"></i> Novo
+                            </button>
+                        </div>
+                        <div class="data-table">
+                            <table id="usuariosTable">
+                                <thead><tr><th>Usuário</th><th>Nome</th><th>Perfil</th><th>Ações</th></tr></thead>
+                                <tbody id="usuariosList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="clientModal" class="modal"><div class="modal-content"><h2 id="clientModalTitle">Novo Cliente</h2><form id="clientForm"><input type="hidden" id="clientId"><div class="input-group"><input type="text" id="clientNome" placeholder="Nome completo" required></div><div class="input-group"><input type="text" id="clientCpf" placeholder="CPF"></div><div class="input-group"><input type="text" id="clientTelefone" placeholder="Telefone"></div><div class="input-group"><input type="text" id="clientEndereco" placeholder="Endereço"></div><div class="input-group"><input type="text" id="clientBairro" placeholder="Bairro"></div><div class="input-group"><input type="text" id="clientCidade" placeholder="Cidade"></div><div class="input-group"><input type="text" id="clientEstado" placeholder="Estado"></div><div class="input-group"><textarea id="clientObservacoes" placeholder="Observações"></textarea></div><div class="input-group"><button type="button" class="btn-secondary" onclick="getLocation()"><i class="fas fa-map-marker-alt"></i> Capturar Localização</button></div><div id="locationInfo"></div><button type="submit" class="btn-primary">Salvar</button><button type="button" class="btn-secondary" onclick="closeModal('clientModal')">Cancelar</button></form></div></div>
+
+    <div id="cobrancaModal" class="modal"><div class="modal-content"><h2>Nova Cobrança</h2><form id="cobrancaForm"><div class="input-group"><select id="cobrancaCliente" required><option value="">Selecione um cliente</option></select></div><div class="input-group"><input type="number" id="cobrancaValor" placeholder="Valor" required step="0.01"></div><div class="input-group"><input type="date" id="cobrancaVencimento" required></div><div class="input-group"><textarea id="cobrancaObs" placeholder="Observações"></textarea></div><button type="submit" class="btn-primary">Salvar</button><button type="button" class="btn-secondary" onclick="closeModal('cobrancaModal')">Cancelar</button></form></div></div>
+
+    <div id="pagamentoModal" class="modal"><div class="modal-content"><h2>Registrar Pagamento</h2><form id="pagamentoForm"><input type="hidden" id="pagamentoCobrancaId"><div class="input-group"><input type="number" id="pagamentoValor" placeholder="Valor recebido" required step="0.01"></div><div class="input-group"><select id="pagamentoForma" required><option value="">Selecione a forma</option><option value="PIX">PIX</option><option value="Dinheiro">Dinheiro</option><option value="Cartão">Cartão</option><option value="Transferência">Transferência</option><option value="PIX + Dinheiro">PIX + Dinheiro</option><option value="PIX + Cartão">PIX + Cartão</option><option value="Outro">Outro</option></select></div><div class="input-group"><textarea id="pagamentoObs" placeholder="Observações"></textarea></div><button type="submit" class="btn-primary">Confirmar</button><button type="button" class="btn-secondary" onclick="closeModal('pagamentoModal')">Cancelar</button></form></div></div>
+
+    <div id="userModal" class="modal"><div class="modal-content"><h2>Novo Usuário</h2><form id="userForm"><input type="hidden" id="userId"><div class="input-group"><input type="text" id="userUsername" placeholder="Usuário" required></div><div class="input-group"><input type="text" id="userNome" placeholder="Nome completo" required></div><div class="input-group"><input type="password" id="userPassword" placeholder="Senha"></div><div class="input-group"><select id="userPerfil" required><option value="admin">Administrador</option><option value="colaborador">Colaborador</option></select></div><button type="submit" class="btn-primary">Salvar</button><button type="button" class="btn-secondary" onclick="closeModal('userModal')">Cancelar</button></form></div></div>
+
+    <script>
+        // =============================================
+        // CONFIGURAÇÃO SUPABASE
+        // =============================================
+        const SUPABASE_URL = 'https://xokavabzhgayxpbmcixs.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhva2F2YWJ6aGdheXhwYm1pY3hzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NjEzNDksImV4cCI6MjA5NjUzNzM0OX0.1vCSRpqYFkfEiABuA6m5oHLnEORCx2jhXxb2RhBwPNk';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // =============================================
+        // VARIÁVEIS GLOBAIS
+        // =============================================
+        let currentUser = null;
+        let clients = JSON.parse(localStorage.getItem('prevenir_clients') || '[]');
+        let charges = JSON.parse(localStorage.getItem('prevenir_charges') || '[]');
+        let payments = JSON.parse(localStorage.getItem('prevenir_payments') || '[]');
+        let users = JSON.parse(localStorage.getItem('prevenir_users') || '[]');
+        let pendingSync = JSON.parse(localStorage.getItem('prevenir_pending_sync') || '[]');
+        
+        let isOnline = navigator.onLine;
+        let syncInProgress = false;
+        let currentCobrancaFilter = '';
+        let currentPagamentoFilter = '';
+
+        // =============================================
+        // INICIALIZAR DADOS PADRÃO
+        // =============================================
+        if (users.length === 0) {
+            users = [{
+                id: 1,
+                username: 'Yagil',
+                password: 'admin123',
+                nome: 'Administrador',
+                perfil: 'admin',
+                ativo: true,
+                synced: true,
+                created_at: new Date().toISOString()
+            }];
+            localStorage.setItem('prevenir_users', JSON.stringify(users));
+        }
+
+        if (clients.length === 0) {
+            clients = [
+                { id: 1, nome: 'João Silva', cpf: '123.456.789-00', telefone: '(11) 99999-9999', endereco: 'Rua A, 123', bairro: 'Centro', cidade: 'São Paulo', estado: 'SP', observacoes: '', status: 'regular', synced: true, created_at: new Date().toISOString() },
+                { id: 2, nome: 'Maria Santos', cpf: '987.654.321-00', telefone: '(11) 88888-8888', endereco: 'Rua B, 456', bairro: 'Jardins', cidade: 'São Paulo', estado: 'SP', observacoes: '', status: 'regular', synced: true, created_at: new Date().toISOString() }
+            ];
+            localStorage.setItem('prevenir_clients', JSON.stringify(clients));
+        }
+
+        if (charges.length === 0) {
+            charges = [
+                { id: 1, cliente_id: 1, valor: 1500, vencimento: '2024-12-15', status: 'pending', observacoes: '', synced: true, created_at: new Date().toISOString() },
+                { id: 2, cliente_id: 2, valor: 2500, vencimento: '2024-12-20', status: 'paid', observacoes: '', synced: true, created_at: new Date().toISOString() }
+            ];
+            localStorage.setItem('prevenir_charges', JSON.stringify(charges));
+        }
+
+        // =============================================
+        // FUNÇÃO DE TELA CHEIA (FULLSCREEN)
+        // =============================================
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                document.getElementById('fullscreenBtn').innerHTML = '<i class="fas fa-compress"></i>';
+            } else {
+                document.exitFullscreen();
+                document.getElementById('fullscreenBtn').innerHTML = '<i class="fas fa-expand"></i>';
+            }
+        }
+
+        document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+        
+        // Detectar mudança de fullscreen
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                document.getElementById('fullscreenBtn').innerHTML = '<i class="fas fa-compress"></i>';
+            } else {
+                document.getElementById('fullscreenBtn').innerHTML = '<i class="fas fa-expand"></i>';
+            }
+        });
+
+        // =============================================
+        // SISTEMA DE SYNC (AUTOMÁTICO E INVISÍVEL)
+        // =============================================
+        function updateSyncIndicator() {
+            const indicator = document.getElementById('syncIndicator');
+            if (!indicator) return;
+            
+            if (!isOnline) {
+                indicator.className = 'sync-indicator offline';
+            } else if (pendingSync.length > 0 || syncInProgress) {
+                indicator.className = 'sync-indicator syncing';
+            } else {
+                indicator.className = 'sync-indicator';
+            }
+        }
+
+        async function autoSync() {
+            if (!isOnline || syncInProgress || pendingSync.length === 0) return;
+            
+            syncInProgress = true;
+            updateSyncIndicator();
+            
+            try {
+                for (let i = 0; i < pendingSync.length; i++) {
+                    const item = pendingSync[i];
+                    console.log(`[AutoSync] Enviando ${item.type}:`, item.data);
+                    
+                    if (item.type === 'client') {
+                        await supabase.from('clientes').upsert(item.data);
+                    } else if (item.type === 'charge') {
+                        await supabase.from('cobrancas').upsert(item.data);
+                    } else if (item.type === 'payment') {
+                        await supabase.from('pagamentos').upsert(item.data);
+                    } else if (item.type === 'user') {
+                        await supabase.from('usuarios').upsert(item.data);
+                    }
+                    
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                pendingSync = [];
+                localStorage.setItem('prevenir_pending_sync', JSON.stringify(pendingSync));
+                console.log('[AutoSync] Sincronização concluída!');
+            } catch (error) {
+                console.error('[AutoSync] Erro:', error);
+            } finally {
+                syncInProgress = false;
+                updateSyncIndicator();
+            }
+        }
+
+        function addToPendingSync(type, data) {
+            pendingSync.push({
+                id: Date.now(),
+                type: type,
+                data: data,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('prevenir_pending_sync', JSON.stringify(pendingSync));
+            updateSyncIndicator();
+            
+            if (isOnline && !syncInProgress) {
+                setTimeout(() => autoSync(), 100);
+            }
+        }
+
+        // =============================================
+        // KEEP-ALIVE (A CADA 23 HORAS)
+        // =============================================
+        async function manterBancoVivo() {
+            console.log('🔄 Mantendo banco ativo...', new Date().toLocaleString());
+            
+            try {
+                const fakeCliente = {
+                    nome: `KeepAlive_${Date.now()}`,
+                    cpf: `000.000.${Math.random().toString().slice(2,5)}-${Math.random().toString().slice(2,4)}`,
+                    telefone: `(11) 9${Math.floor(Math.random() * 9000 + 1000)}-${Math.floor(Math.random() * 9000 + 1000)}`,
+                    observacoes: 'Registro temporário - Sistema Keep Alive',
+                    created_at: new Date().toISOString()
+                };
+                
+                const { data, error: insertError } = await supabase
+                    .from('clientes')
+                    .insert([fakeCliente])
+                    .select();
+                
+                if (insertError) throw insertError;
+                
+                setTimeout(async () => {
+                    await supabase.from('clientes').delete().eq('id', data[0].id);
+                    console.log('✅ Keep-Alive executado! Próximo em 23 horas.');
+                }, 2000);
+                
+            } catch (error) {
+                console.error('❌ Erro no Keep-Alive:', error.message);
+                await supabase.from('clientes').select('count');
+            }
+        }
+
+        // =============================================
+        // EVENTOS DE CONEXÃO
+        // =============================================
+        window.addEventListener('online', () => {
+            isOnline = true;
+            updateSyncIndicator();
+            if (pendingSync.length > 0 && !syncInProgress) autoSync();
+        });
+        
+        window.addEventListener('offline', () => {
+            isOnline = false;
+            updateSyncIndicator();
+        });
+
+        // =============================================
+        // FUNÇÕES DE FILTRO
+        // =============================================
+        function filterCobrancas() {
+            currentCobrancaFilter = document.getElementById('searchCobranca').value.toLowerCase();
+            const filtered = charges.filter(charge => {
+                const client = clients.find(c => c.id === charge.cliente_id);
+                return client && client.nome.toLowerCase().includes(currentCobrancaFilter);
+            });
+            renderCobrancasList(filtered);
+        }
+        
+        function filterPagamentos() {
+            currentPagamentoFilter = document.getElementById('searchPagamento').value.toLowerCase();
+            const filtered = payments.filter(payment => {
+                const charge = charges.find(c => c.id === payment.cobranca_id);
+                const client = charge ? clients.find(c => c.id === charge.cliente_id) : null;
+                return client && client.nome.toLowerCase().includes(currentPagamentoFilter);
+            });
+            renderPagamentosList(filtered);
+        }
+        
+        function renderCobrancasList(chargesToRender) {
+            const tbody = document.getElementById('cobrancasList');
+            tbody.innerHTML = chargesToRender.map(charge => {
+                const client = clients.find(c => c.id === charge.cliente_id);
+                const statusClass = charge.status === 'pending' ? 'badge-pending' : charge.status === 'paid' ? 'badge-paid' : 'badge-overdue';
+                const isOverdue = charge.status === 'pending' && new Date(charge.vencimento) < new Date();
+                return `
+                    <tr>
+                        <td>${client?.nome || '-'}</td>
+                        <td>R$ ${charge.valor.toFixed(2)}</td>
+                        <td>${new Date(charge.vencimento).toLocaleDateString()}</td>
+                        <td><span class="badge ${statusClass}">${isOverdue ? 'Atrasado' : (charge.status === 'pending' ? 'Pendente' : 'Pago')}</span></td>
+                        <td>${charge.status === 'pending' ? `<button class="btn-icon btn-edit" onclick="openPagamentoModal(${charge.id})">Pagar</button>` : ''}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function renderPagamentosList(paymentsToRender) {
+            const tbody = document.getElementById('pagamentosList');
+            tbody.innerHTML = paymentsToRender.map(payment => {
+                const charge = charges.find(c => c.id === payment.cobranca_id);
+                const client = charge ? clients.find(c => c.id === charge.cliente_id) : null;
+                const user = users.find(u => u.id === payment.usuario_id);
+                return `
+                    <tr>
+                        <td>${client?.nome || '-'}</td>
+                        <td>R$ ${payment.valor_recebido.toFixed(2)}</td>
+                        <td>${payment.forma_pagamento}</td>
+                        <td>${new Date(payment.data_pagamento).toLocaleString()}</td>
+                        <td>${user?.nome || '-'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // =============================================
+        // LOGIN
+        // =============================================
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const user = users.find(u => u.username === username && u.password === password && u.ativo);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('prevenir_currentUser', JSON.stringify(user));
+                document.getElementById('loginScreen').classList.remove('active');
+                document.getElementById('dashboardScreen').classList.add('active');
+                if (user.perfil !== 'admin') document.getElementById('usuariosNav').style.display = 'none';
+                else document.getElementById('usuariosNav').style.display = 'flex';
+                loadDashboard();
+                loadClientes();
+                loadCobrancas();
+                loadPagamentos();
+                loadUsuarios();
+                updateSyncIndicator();
+                
+                // Iniciar Keep-Alive após login
+                setTimeout(manterBancoVivo, 60000);
+                setInterval(manterBancoVivo, 23 * 60 * 60 * 1000);
+            } else {
+                document.getElementById('loginError').textContent = 'Usuário ou senha inválidos';
+                document.getElementById('loginError').style.display = 'block';
+                setTimeout(() => document.getElementById('loginError').style.display = 'none', 3000);
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            currentUser = null;
+            localStorage.removeItem('prevenir_currentUser');
+            document.getElementById('dashboardScreen').classList.remove('active');
+            document.getElementById('loginScreen').classList.add('active');
+            document.getElementById('loginForm').reset();
+        });
+
+        // =============================================
+        // NAVEGAÇÃO
+        // =============================================
+        document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const page = item.getAttribute('data-page');
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(`${page}Page`).classList.add('active');
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                if (page === 'dashboard') loadDashboard();
+                if (page === 'clientes') loadClientes();
+                if (page === 'cobrancas') { loadCobrancas(); document.getElementById('searchCobranca').value = ''; currentCobrancaFilter = ''; }
+                if (page === 'pagamentos') { loadPagamentos(); document.getElementById('searchPagamento').value = ''; currentPagamentoFilter = ''; }
+                if (page === 'usuarios') loadUsuarios();
+                if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('active');
+            });
+        });
+
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // =============================================
+        // LOAD FUNCTIONS
+        // =============================================
+        function loadDashboard() {
+            const totalClients = clients.length;
+            const pendingCharges = charges.filter(c => c.status === 'pending').length;
+            const paidCharges = charges.filter(c => c.status === 'paid').length;
+            const overdueCharges = charges.filter(c => c.status === 'pending' && new Date(c.vencimento) < new Date()).length;
+            const totalToReceive = charges.filter(c => c.status === 'pending').reduce((sum, c) => sum + c.valor, 0);
+            const receivedThisMonth = payments.filter(p => {
+                const paymentDate = new Date(p.data_pagamento);
+                const now = new Date();
+                return paymentDate.getMonth() === now.getMonth() && paymentDate.getFullYear() === now.getFullYear();
+            }).reduce((sum, p) => sum + p.valor_recebido, 0);
+            
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card"><h3>Total Clientes</h3><div class="value">${totalClients}</div></div>
+                <div class="stat-card"><h3>Pendentes</h3><div class="value">${pendingCharges}</div></div>
+                <div class="stat-card"><h3>Pagas</h3><div class="value">${paidCharges}</div></div>
+                <div class="stat-card"><h3>Atrasadas</h3><div class="value">${overdueCharges}</div></div>
+                <div class="stat-card"><h3>A Receber</h3><div class="value">R$ ${totalToReceive.toFixed(2)}</div></div>
+                <div class="stat-card"><h3>Recebido Mês</h3><div class="value">R$ ${receivedThisMonth.toFixed(2)}</div></div>
+            `;
+        }
+        
+        function loadClientes() {
+            const tbody = document.getElementById('clientesList');
+            tbody.innerHTML = clients.map(client => `
+                <tr>
+                    <td><strong>${client.nome}</strong><br><small style="color:#888">${client.cpf || '-'}</small></td>
+                    <td>${client.telefone || '-'}</td>
+                    <td>
+                        <button class="btn-icon btn-view" onclick="viewClient(${client.id})"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon btn-edit" onclick="editClient(${client.id})"><i class="fas fa-edit"></i></button>
+                        ${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${client.id})"><i class="fas fa-trash"></i></button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function loadCobrancas() {
+            renderCobrancasList(charges);
+        }
+        
+        function loadPagamentos() {
+            renderPagamentosList(payments);
+        }
+        
+        function loadUsuarios() {
+            if (currentUser?.perfil !== 'admin') return;
+            const tbody = document.getElementById('usuariosList');
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.username}</td>
+                    <td>${user.nome}</td>
+                    <td>${user.perfil === 'admin' ? 'Admin' : 'Colaborador'}</td>
+                    <td>
+                        <button class="btn-icon btn-edit" onclick="editUser(${user.id})"><i class="fas fa-edit"></i></button>
+                        ${user.id !== 1 ? `<button class="btn-icon btn-delete" onclick="deleteUser(${user.id})"><i class="fas fa-trash"></i></button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // =============================================
+        // CRUD CLIENTES
+        // =============================================
+        function viewClient(id) {
+            const client = clients.find(c => c.id === id);
+            if (client) {
+                alert(`📋 CLIENTE\n\nNome: ${client.nome}\nCPF: ${client.cpf || '-'}\nTelefone: ${client.telefone || '-'}\nEndereço: ${client.endereco || '-'}\nBairro: ${client.bairro || '-'}\nCidade: ${client.cidade || '-'}\nEstado: ${client.estado || '-'}\nObservações: ${client.observacoes || '-'}`);
+            }
+        }
+        
+        function editClient(id) {
+            const client = clients.find(c => c.id === id);
+            if (client) {
+                document.getElementById('clientModalTitle').textContent = 'Editar Cliente';
+                document.getElementById('clientId').value = client.id;
+                document.getElementById('clientNome').value = client.nome;
+                document.getElementById('clientCpf').value = client.cpf || '';
+                document.getElementById('clientTelefone').value = client.telefone || '';
+                document.getElementById('clientEndereco').value = client.endereco || '';
+                document.getElementById('clientBairro').value = client.bairro || '';
+                document.getElementById('clientCidade').value = client.cidade || '';
+                document.getElementById('clientEstado').value = client.estado || '';
+                document.getElementById('clientObservacoes').value = client.observacoes || '';
+                document.getElementById('clientModal').classList.add('active');
+            }
+        }
+        
+        function deleteClient(id) {
+            if (confirm('Tem certeza que deseja excluir este cliente?')) {
+                clients = clients.filter(c => c.id !== id);
+                localStorage.setItem('prevenir_clients', JSON.stringify(clients));
+                loadClientes();
+                loadDashboard();
+            }
+        }
+        
+        document.getElementById('clientForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('clientId').value;
+            const clientData = {
+                id: id ? parseInt(id) : Date.now(),
+                nome: document.getElementById('clientNome').value,
+                cpf: document.getElementById('clientCpf').value,
+                telefone: document.getElementById('clientTelefone').value,
+                endereco: document.getElementById('clientEndereco').value,
+                bairro: document.getElementById('clientBairro').value,
+                cidade: document.getElementById('clientCidade').value,
+                estado: document.getElementById('clientEstado').value,
+                observacoes: document.getElementById('clientObservacoes').value,
+                status: 'regular',
+                synced: false,
+                created_at: new Date().toISOString()
+            };
+            
+            if (id) {
+                const index = clients.findIndex(c => c.id === parseInt(id));
+                if (index !== -1) clients[index] = clientData;
+            } else {
+                clients.push(clientData);
+                addToPendingSync('client', clientData);
+            }
+            
+            localStorage.setItem('prevenir_clients', JSON.stringify(clients));
+            closeModal('clientModal');
+            loadClientes();
+            loadDashboard();
+        });
+        
+        function openClientModal() {
+            document.getElementById('clientModalTitle').textContent = 'Novo Cliente';
+            document.getElementById('clientForm').reset();
+            document.getElementById('clientId').value = '';
+            document.getElementById('locationInfo').innerHTML = '';
+            document.getElementById('clientModal').classList.add('active');
+        }
+        
+        // =============================================
+        // CRUD COBRANÇAS
+        // =============================================
+        function openCobrancaModal() {
+            const select = document.getElementById('cobrancaCliente');
+            select.innerHTML = '<option value="">Selecione um cliente</option>' + clients.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
+            document.getElementById('cobrancaForm').reset();
+            document.getElementById('cobrancaModal').classList.add('active');
+        }
+        
+        document.getElementById('cobrancaForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const chargeData = {
+                id: Date.now(),
+                cliente_id: parseInt(document.getElementById('cobrancaCliente').value),
+                valor: parseFloat(document.getElementById('cobrancaValor').value),
+                vencimento: document.getElementById('cobrancaVencimento').value,
+                status: 'pending',
+                observacoes: document.getElementById('cobrancaObs').value,
+                synced: false,
+                created_at: new Date().toISOString()
+            };
+            charges.push(chargeData);
+            localStorage.setItem('prevenir_charges', JSON.stringify(charges));
+            addToPendingSync('charge', chargeData);
+            closeModal('cobrancaModal');
+            loadCobrancas();
+            loadDashboard();
+        });
+        
+        // =============================================
+        // PAGAMENTOS
+        // =============================================
+        function openPagamentoModal(chargeId) {
+            document.getElementById('pagamentoCobrancaId').value = chargeId;
+            const charge = charges.find(c => c.id === chargeId);
+            if (charge) document.getElementById('pagamentoValor').value = charge.valor;
+            document.getElementById('pagamentoForm').reset();
+            document.getElementById('pagamentoModal').classList.add('active');
+        }
+        
+        document.getElementById('pagamentoForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const cobrancaId = parseInt(document.getElementById('pagamentoCobrancaId').value);
+            const paymentData = {
+                id: Date.now(),
+                cobranca_id: cobrancaId,
+                valor_recebido: parseFloat(document.getElementById('pagamentoValor').value),
+                forma_pagamento: document.getElementById('pagamentoForma').value,
+                observacoes: document.getElementById('pagamentoObs').value,
+                usuario_id: currentUser.id,
+                data_pagamento: new Date().toISOString(),
+                synced: false
+            };
+            payments.push(paymentData);
+            const chargeIndex = charges.findIndex(c => c.id === cobrancaId);
+            if (chargeIndex !== -1) charges[chargeIndex].status = 'paid';
+            localStorage.setItem('prevenir_payments', JSON.stringify(payments));
+            localStorage.setItem('prevenir_charges', JSON.stringify(charges));
+            addToPendingSync('payment', paymentData);
+            closeModal('pagamentoModal');
+            loadCobrancas();
+            loadPagamentos();
+            loadDashboard();
+        });
+        
+        // =============================================
+        // CRUD USUÁRIOS
+        // =============================================
+        function openUserModal() {
+            if (currentUser?.perfil !== 'admin') return;
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            document.getElementById('userModal').classList.add('active');
+        }
+        
+        function editUser(id) {
+            const user = users.find(u => u.id === id);
+            if (user) {
+                document.getElementById('userId').value = user.id;
+                document.getElementById('userUsername').value = user.username;
+                document.getElementById('userNome').value = user.nome;
+                document.getElementById('userPerfil').value = user.perfil;
+                document.getElementById('userModal').classList.add('active');
+            }
+        }
+        
+        function deleteUser(id) {
+            if (confirm('Tem certeza que deseja excluir este usuário?')) {
+                users = users.filter(u => u.id !== id);
+                localStorage.setItem('prevenir_users', JSON.stringify(users));
+                loadUsuarios();
+            }
+        }
+        
+        document.getElementById('userForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('userId').value;
+            const userData = {
+                id: id ? parseInt(id) : Date.now(),
+                username: document.getElementById('userUsername').value,
+                nome: document.getElementById('userNome').value,
+                password: document.getElementById('userPassword').value || '123456',
+                perfil: document.getElementById('userPerfil').value,
+                ativo: true,
+                synced: false,
+                created_at: new Date().toISOString()
+            };
+            if (id) {
+                const index = users.findIndex(u => u.id === parseInt(id));
+                if (index !== -1) users[index] = userData;
+            } else {
+                users.push(userData);
+                addToPendingSync('user', userData);
+            }
+            localStorage.setItem('prevenir_users', JSON.stringify(users));
+            closeModal('userModal');
+            loadUsuarios();
+        });
+        
+        // =============================================
+        // UTILITÁRIOS
+        // =============================================
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    document.getElementById('locationInfo').innerHTML = `📍 Lat: ${position.coords.latitude.toFixed(6)}, Lng: ${position.coords.longitude.toFixed(6)}`;
+                    alert('Localização capturada com sucesso!');
+                }, () => {
+                    alert('Erro ao capturar localização. Verifique as permissões.');
+                });
+            } else {
+                alert('Geolocalização não é suportada pelo navegador');
+            }
+        }
+        
+        function filterClients() {
+            const search = document.getElementById('searchClient').value.toLowerCase();
+            const filtered = clients.filter(c => 
+                c.nome.toLowerCase().includes(search) || 
+                (c.cpf && c.cpf.includes(search)) || 
+                (c.telefone && c.telefone.includes(search))
+            );
+            const tbody = document.getElementById('clientesList');
+            tbody.innerHTML = filtered.map(client => `
+                <tr>
+                    <td><strong>${client.nome}</strong><br><small style="color:#888">${client.cpf || '-'}</small></td>
+                    <td>${client.telefone || '-'}</td>
+                    <td>
+                        <button class="btn-icon btn-view" onclick="viewClient(${client.id})"><i class="fas fa-eye"></i></button>
+                        <button class="btn-icon btn-edit" onclick="editClient(${client.id})"><i class="fas fa-edit"></i></button>
+                        ${currentUser?.perfil === 'admin' ? `<button class="btn-icon btn-delete" onclick="deleteClient(${client.id})"><i class="fas fa-trash"></i></button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        // =============================================
+        // VERIFICAR SESSÃO SALVA
+        // =============================================
+        const savedUser = localStorage.getItem('prevenir_currentUser');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('dashboardScreen').classList.add('active');
+            if (currentUser.perfil !== 'admin') document.getElementById('usuariosNav').style.display = 'none';
+            loadDashboard();
+            loadClientes();
+            loadCobrancas();
+            loadPagamentos();
+            loadUsuarios();
+            updateSyncIndicator();
+            
+            // Iniciar Keep-Alive
+            setTimeout(manterBancoVivo, 60000);
+            setInterval(manterBancoVivo, 23 * 60 * 60 * 1000);
+        }
+        
+        // Atualizar cobranças atrasadas
+        function updateOverdueCharges() {
+            const today = new Date();
+            charges.forEach(charge => {
+                if (charge.status === 'pending' && new Date(charge.vencimento) < today) {
+                    charge.status = 'overdue';
+                }
+            });
+            localStorage.setItem('prevenir_charges', JSON.stringify(charges));
+        }
+        updateOverdueCharges();
+        
+        console.log('💚 Sistema Prevenir - Versão Ouro e Preto');
+        console.log('🎨 Paleta: Dourado (#D4AF37) e Preto (#000000)');
+        console.log('📱 Modo Fullscreen disponível no botão superior direito');
+        console.log('🔄 Sincronização automática ativada');
+        console.log('💾 Keep-Alive ativado (a cada 23 horas)');
+    </script>
+</body>
+</html>
